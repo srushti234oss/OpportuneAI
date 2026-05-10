@@ -29,7 +29,11 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
+<<<<<<< HEAD
 set -gx VIRTUAL_ENV "/Users/sharanagoudamadabal/Desktop/OpportuneAI./OpportuneAI/.venv"
+=======
+set -gx VIRTUAL_ENV "/Users/sharanagoudamadabal/Desktop/OpportuneAI/OpportuneAI/.venv"
+>>>>>>> 8bd8f8a7e5acdbe43da2a8cd91fd73b68d079c6a
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

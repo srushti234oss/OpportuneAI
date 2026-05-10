@@ -8,7 +8,11 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
+<<<<<<< HEAD
 setenv VIRTUAL_ENV "/Users/sharanagoudamadabal/Desktop/OpportuneAI./OpportuneAI/.venv"
+=======
+setenv VIRTUAL_ENV "/Users/sharanagoudamadabal/Desktop/OpportuneAI/OpportuneAI/.venv"
+>>>>>>> 8bd8f8a7e5acdbe43da2a8cd91fd73b68d079c6a
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"

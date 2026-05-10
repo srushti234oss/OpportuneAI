@@ -12,5 +12,8 @@ import os
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'OpportuneAI.OpportuneAI.settings')
+=======
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'OpportuneAI.settings')
+
 
 application = get_wsgi_application()
