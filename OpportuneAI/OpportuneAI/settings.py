@@ -7,7 +7,11 @@ SECRET_KEY = 'django-insecure-opportuneai-key'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "opportuneai.onrender.com",
+    "127.0.0.1",
+    "localhost",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
