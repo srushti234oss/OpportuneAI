@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Tracker — OpportuneAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css"/>
+<style>
+.tracker-page{padding:1.5rem 2rem;}
+.tracker-page h1{font-family:'Familjen Grotesk',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:0.3rem;}
+.tracker-page .sub{color:var(--gray-500);font-size:0.875rem;margin-bottom:1.5rem;}
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:start;}
+.kb-col{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.kb-header{padding:1rem 1.1rem;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:0.5rem;}
+.kb-header h3{font-size:0.85rem;font-weight:700;flex:1;}
+.kb-count{background:var(--gray-100);color:var(--gray-600);font-size:0.7rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:100px;}
+.kb-saved .kb-header{border-top:3px solid var(--blue);}
+.kb-applied .kb-header{border-top:3px solid var(--orange);}
+.kb-accepted .kb-header{border-top:3px solid var(--green);}
+.kb-rejected .kb-header{border-top:3px solid var(--red);}
+.kb-body{padding:0.75rem;min-height:180px;}
+.kb-empty{text-align:center;padding:2rem 0.5rem;color:var(--gray-400);font-size:0.8rem;line-height:1.6;}
+.kb-card{background:var(--gray-50);border:1.5px solid var(--border);border-radius:10px;padding:0.85rem;margin-bottom:0.6rem;transition:all var(--transition);}
+.kb-card:hover{border-color:var(--yellow);background:var(--yellow-light);}
+.kb-card-title{font-size:0.82rem;font-weight:700;color:var(--gray-900);margin-bottom:0.15rem;}
+.kb-card-org{font-size:0.72rem;color:var(--gray-500);margin-bottom:0.5rem;}
+.kb-card-dl{font-size:0.68rem;color:var(--gray-400);margin-bottom:0.6rem;}
+.kb-card-actions{display:flex;gap:0.35rem;flex-wrap:wrap;}
+.kb-btn{font-size:0.68rem;padding:0.2rem 0.6rem;border-radius:100px;background:var(--white);border:1.5px solid var(--border);color:var(--gray-700);cursor:pointer;font-family:inherit;transition:all var(--transition);}
+.kb-btn:hover{background:var(--black);color:#fff;border-color:var(--black);}
+.kb-btn.danger:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.kb-btn.success{background:var(--green-light);color:#065f46;border-color:#6ee7b7;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.stat-pill{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;}
+.stat-pill .sp-n{font-family:'Familjen Grotesk',sans-serif;font-size:1.6rem;font-weight:700;display:block;}
+.stat-pill .sp-l{font-size:0.72rem;color:var(--gray-500);}
+</style>
+</head>
+<body>
+<aside class="sidebar"><div class="sidebar-logo"><div class="logo-mark">OA</div><span class="logo-text">Opportune<b>AI</b></span></div>
+<nav class="sidebar-nav">
+<a href="../index.html" class="nav-item"><span class="nav-icon">⊞</span><span>Home</span></a>
+<a href="scholarships.html" class="nav-item"><span class="nav-icon">🎓</span><span>Scholarships</span></a>
+<a href="internships.html" class="nav-item"><span class="nav-icon">💼</span><span>Internships</span></a>
+<a href="hackathons.html" class="nav-item"><span class="nav-icon">⚡</span><span>Hackathons</span></a>
+<a href="fellowships.html" class="nav-item"><span class="nav-icon">🔬</span><span>Fellowships</span></a>
+<a href="tracker.html" class="nav-item active"><span class="nav-icon">◎</span><span>My Tracker</span><span class="nav-badge show" id="trackerBadge">0</span></a>
+<a href="skillmap.html" class="nav-item"><span class="nav-icon">◈</span><span>Skill Map</span></a>
+</nav>
+<div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
+</aside>
+<main class="main-content">
+<header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search…"/></div><div class="topbar-right"><button class="btn-setup" id="openSetupBtn">Set Up My Profile →</button></div></header>
+<div class="tracker-page">
+<h1>My Application Tracker</h1>
+<p class="sub">Track every opportunity from saving to acceptance. Move cards between columns as you progress.</p>
+<div class="stats-row" id="statsRow"></div>
+<div class="kanban" id="kanban"></div>
+</div>
+</main>
+
+<div class="detail-panel-overlay" id="detailOverlay"><div class="detail-panel"><button class="dp-close" id="dpClose">✕</button><div class="dp-body" id="dpBody"></div></div></div>
+<div class="modal-overlay" id="profileModal"><div class="modal-box"><button class="modal-close" id="closeModal">✕</button><div class="modal-header"><div class="modal-step-bar"><div class="msb-step active" data-step="1">1<span>Basics</span></div><div class="msb-line"></div><div class="msb-step" data-step="2">2<span>Skills</span></div><div class="msb-line"></div><div class="msb-step" data-step="3">3<span>Interests</span></div></div></div><div class="modal-step-content active" id="step1"><h2>Tell us about yourself</h2><p class="modal-sub">Powers your AI recommendations</p><div class="form-row"><div class="fg"><label>Full Name</label><input type="text" id="fName" class="fi"></div><div class="fg"><label>Branch</label><input type="text" id="fBranch" class="fi"></div></div><div class="form-row"><div class="fg"><label>Year</label><select id="fYear" class="fi"><option value="1">1st</option><option value="2">2nd</option><option value="3" selected>3rd</option><option value="4">4th</option></select></div><div class="fg"><label>College</label><input type="text" id="fCollege" class="fi"></div></div><div class="fg"><label>GPA</label><div class="slider-row"><input type="range" id="fGpa" min="0" max="10" step="0.1" value="7.5" class="gpa-range"><div class="gpa-val" id="gpaVal">7.5</div></div><div class="gpa-desc" id="gpaDesc">Good</div></div><button class="btn-primary full" onclick="goStep(2)">Next →</button></div><div class="modal-step-content" id="step2"><h2>Your Skills</h2><p class="modal-sub">Click to select</p><div class="skill-grid" id="skillGrid"></div><div class="selected-preview" id="skillPreview"></div><div class="step-nav"><button class="btn-outline" onclick="goStep(1)">← Back</button><button class="btn-primary" onclick="goStep(3)">Next →</button></div></div><div class="modal-step-content" id="step3"><h2>Your Interests</h2><p class="modal-sub">Click to select</p><div class="skill-grid" id="interestGrid"></div><div class="selected-preview" id="interestPreview"></div><div class="step-nav"><button class="btn-outline" onclick="goStep(2)">← Back</button><button class="btn-primary full" id="saveProfileBtn">Save ✦</button></div></div></div></div>
+<div class="toast-container" id="toastContainer"></div>
+<script src="../js/data.js"></script><script src="../js/app.js"></script>
+<script>
+(function(){
+function getState(){return{saved:JSON.parse(localStorage.getItem('oai_saved'))||[],applied:JSON.parse(localStorage.getItem('oai_applied'))||[],accepted:JSON.parse(localStorage.getItem('oai_accepted'))||[],rejected:JSON.parse(localStorage.getItem('oai_rejected'))||[]};}
+function setState(k,v){localStorage.setItem('oai_'+k,JSON.stringify(v));}
+
+function moveCard(id,from,to){
+  let fromArr=JSON.parse(localStorage.getItem('oai_'+from))||[];
+  let toArr=JSON.parse(localStorage.getItem('oai_'+to))||[];
+  fromArr=fromArr.filter(i=>i!==id);
+  if(!toArr.includes(id))toArr.push(id);
+  setState(from,fromArr);setState(to,toArr);
+  renderTracker();updateTrackerBadge();
+  if(to==='accepted')toast('Congratulations! 🎉','success');
+  else toast('Moved to '+to,'');
+}
+function removeCard(id,from){
+  let arr=JSON.parse(localStorage.getItem('oai_'+from))||[];
+  arr=arr.filter(i=>i!==id);setState(from,arr);renderTracker();updateTrackerBadge();toast('Removed');
+}
+
+function cardHtml(opp,status){
+  const{text:dl}=fmtDeadline(opp.deadline);
+  let actions='';
+  if(status==='saved')actions=`<button class="kb-btn" onclick="moveCard(${opp.id},'saved','applied')">Mark Applied</button><button class="kb-btn danger" onclick="removeCard(${opp.id},'saved')">Remove</button>`;
+  else if(status==='applied')actions=`<button class="kb-btn success" onclick="moveCard(${opp.id},'applied','accepted')">Got In! 🎉</button><button class="kb-btn" onclick="moveCard(${opp.id},'applied','rejected')">Rejected</button><button class="kb-btn danger" onclick="removeCard(${opp.id},'applied')">Remove</button>`;
+  else if(status==='accepted')actions=`<button class="kb-btn danger" onclick="removeCard(${opp.id},'accepted')">Remove</button>`;
+  else if(status==='rejected')actions=`<button class="kb-btn" onclick="moveCard(${opp.id},'rejected','applied')">Re-apply</button><button class="kb-btn danger" onclick="removeCard(${opp.id},'rejected')">Remove</button>`;
+  return`<div class="kb-card" onclick="if(event.target.tagName!=='BUTTON')openDetail(OPPORTUNITIES.find(o=>o.id===${opp.id}))">
+    <div class="kb-card-title">${opp.title}</div>
+    <div class="kb-card-org">${opp.org} · <span class="oc-type type-${opp.type}" style="font-size:0.6rem;padding:0.1rem 0.4rem">${opp.type}</span></div>
+    <div class="kb-card-dl">${dl}</div>
+    <div class="kb-card-actions">${actions}</div>
+  </div>`;
+}
+
+function colHtml(title,icon,status,colorClass,emptyMsg){
+  const st=getState();
+  const ids=st[status]||[];
+  const opps=ids.map(id=>OPPORTUNITIES.find(o=>o.id===id)).filter(Boolean);
+  return`<div class="kb-col ${colorClass}">
+    <div class="kb-header"><span>${icon}</span><h3>${title}</h3><span class="kb-count">${opps.length}</span></div>
+    <div class="kb-body">${opps.length===0?`<div class="kb-empty">${emptyMsg}</div>`:opps.map(o=>cardHtml(o,status)).join('')}</div>
+  </div>`;
+}
+
+function renderTracker(){
+  const kanban=document.getElementById('kanban');
+  kanban.innerHTML=
+    colHtml('Saved','🔖','saved','kb-saved','Save opportunities from any page using the ♡ button.')+
+    colHtml('Applied','📝','applied','kb-applied','Open a card and click "Mark as Applied" to move it here.')+
+    colHtml('Accepted','🎉','accepted','kb-accepted','Celebrating your wins here! You havve got this.')+
+    colHtml('Rejected','❌','rejected','kb-rejected','Rejections are part of the journey. Keep going!');
+
+  const st=getState();
+  const statsRow=document.getElementById('statsRow');
+  statsRow.innerHTML=`
+    <div class="stat-pill"><span class="sp-n" style="color:var(--blue)">${st.saved.length}</span><span class="sp-l">Saved</span></div>
+    <div class="stat-pill"><span class="sp-n" style="color:var(--orange)">${st.applied.length}</span><span class="sp-l">Applied</span></div>
+    <div class="stat-pill"><span class="sp-n" style="color:var(--green)">${st.accepted.length}</span><span class="sp-l">Accepted</span></div>
+    <div class="stat-pill"><span class="sp-n" style="color:var(--red)">${st.rejected.length}</span><span class="sp-l">Rejected</span></div>
+  `;
+}
+
+window.moveCard=moveCard;window.removeCard=removeCard;
+renderTracker();
+})();
+</script>
+</body></html>

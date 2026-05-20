@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hackathons — OpportuneAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<style>
+.page-hero.hack-hero{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;}
+.hack-hero .ph-text p{color:rgba(255,255,255,0.8);}
+.countdown-grid{margin:0 2rem 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+.countdown-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;display:flex;flex-direction:column;gap:0.6rem;}
+.cc-name{font-size:0.875rem;font-weight:700;color:var(--gray-900);}
+.cc-org{font-size:0.75rem;color:var(--gray-500);}
+.cc-days{font-family:'Familjen Grotesk',sans-serif;font-size:1.8rem;font-weight:700;color:var(--orange);}
+.cc-days span{font-size:0.75rem;color:var(--gray-500);font-family:'Plus Jakarta Sans',sans-serif;}
+.cc-bar{height:5px;background:var(--gray-100);border-radius:100px;overflow:hidden;}
+.cc-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--orange),var(--red));}
+</style>
+</head>
+<body>
+<aside class="sidebar"><div class="sidebar-logo"><div class="logo-mark">OA</div><span class="logo-text">Opportune<b>AI</b></span></div>
+<nav class="sidebar-nav">
+<a href="/">Home</a><span class="nav-icon">⊞</span><span>Home</span></a>
+<a href="/scholarships/"  class="nav-item active"><span class="nav-icon">🎓</span><span>Scholarships</span></a>
+<a href="/internships/" class="nav-item"><span class="nav-icon">💼</span><span>Internships</span></a>
+<a href="/hackathons/" class="nav-item"><span class="nav-icon">⚡</span><span>Hackathons</span></a>
+<a href="/fellowships/" class="nav-item"><span class="nav-icon">🔬</span><span>Fellowships</span></a>
+<a href="/tracker/" href="/tracker/" class="nav-item"><span class="nav-icon">◎</span><span>My Tracker</span><span class="nav-badge" id="trackerBadge">0</span></a>
+<a href="/skillmap/" class="nav-item"></a><span class="nav-icon">◈</span><span>Skill Map</span></a>
+</nav>
+<div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
+</aside>
+<main class="main-content">
+<header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search hackathons…"/></div><div class="topbar-right"><button class="btn-setup" id="openSetupBtn">Set Up My Profile →</button></div></header>
+<div class="page-hero hack-hero">
+<div class="ph-text"><h1>⚡ Hackathons</h1><p>Build something incredible. Hackathons are the fastest way to get noticed, win prizes, and land PPO offers. No GPA filter — just skill and hustle.</p></div>
+<div class="ph-stat"><span class="ps-num" style="color:#fff">67</span><span class="ps-label" style="color:rgba(255,255,255,0.6)">Active hackathons</span></div>
+</div>
+<section style="margin:0 2rem 0.75rem;"><div class="section-head"><h2>⏱️ Countdown to Deadline</h2><span class="sgw-sub">Don't miss these</span></div></section>
+<div class="countdown-grid" id="countdownGrid"></div>
+<section class="filter-section"><div class="filter-row">
+<div class="filter-search-wrap"><span class="ts-icon">⌕</span><input type="text" class="filter-input" id="filterInput" placeholder="Search hackathons…"></div>
+<div class="filter-chips">
+<button class="chip active" data-tag="all">All</button>
+<button class="chip" data-tag="Team">Team</button>
+<button class="chip" data-tag="Govt">Government</button>
+<button class="chip" data-tag="Prize">Prize Money</button>
+<button class="chip" data-tag="PPO">PPO</button>
+</div>
+</div></section>
+<section class="full-grid-section"><div class="full-grid" id="mainGrid"></div><div class="no-results hidden" id="noResults"><div class="no-results-icon">⚡</div><p>No hackathons found.</p></div></section>
+</main>
+<div class="detail-panel-overlay" id="detailOverlay"><div class="detail-panel"><button class="dp-close" id="dpClose">✕</button><div class="dp-body" id="dpBody"></div></div></div>
+<div class="modal-overlay" id="profileModal"><div class="modal-box"><button class="modal-close" id="closeModal">✕</button><div class="modal-header"><div class="modal-step-bar"><div class="msb-step active" data-step="1">1<span>Basics</span></div><div class="msb-line"></div><div class="msb-step" data-step="2">2<span>Skills</span></div><div class="msb-line"></div><div class="msb-step" data-step="3">3<span>Interests</span></div></div></div><div class="modal-step-content active" id="step1"><h2>Tell us about yourself</h2><p class="modal-sub">Powers your AI recommendations</p><div class="form-row"><div class="fg"><label>Full Name</label><input type="text" id="fName" class="fi"></div><div class="fg"><label>Branch</label><input type="text" id="fBranch" class="fi"></div></div><div class="form-row"><div class="fg"><label>Year</label><select id="fYear" class="fi"><option value="1">1st</option><option value="2">2nd</option><option value="3" selected>3rd</option><option value="4">4th</option></select></div><div class="fg"><label>College</label><input type="text" id="fCollege" class="fi"></div></div><div class="fg"><label>GPA</label><div class="slider-row"><input type="range" id="fGpa" min="0" max="10" step="0.1" value="7.5" class="gpa-range"><div class("gpa-val" id("gpaVal">7.5</div></div><div class("gpa-desc" id("gpaDesc">Good</div></div><button class("btn-primary full" onclick("goStep(2)">Next →</button></div><div class("modal-step-content" id("step2"><h2>Your Skills</h2><p class("modal-sub">Click to select</p>< div class("skill-grid" id("skillGrid"></ div >< div class("selected-preview" id("skillPreview"></ div >< div class("step-nav"><button class("btn-outline" onclick("goStep(1)">← Back</button><button class("btn-primary" onclick("goStep(3)">Next →</button></ div ></ div >< div class("modal-step-content" id("step3"><h2>Your Interests</h2><p class("modal-sub">Click to select</p>< div	class("skill-grid	id	interestGrid	></	div	>
+<div	class("selected-preview	id	interestPreview	></	div	>
+<div	class("step-nav	>
+<button	class("btn-outline	onclick	"goStep(2)	>
+← Back
+</button>
+<button	class("btn-primary full	id	saveProfileBtn	>
+Save ✦
+</button>
+</ div >
+</ div >
+</ div >
+</ div >
+<div	class("toast-container	id	toastContainer	></	div >
+<script src="{% static 'js/data.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+<script>
+(function(){
+const TYPE='hackathon';
+let activeTag='all',searchQ='';
+function filtered(){let d=OPPORTUNITIES.filter(o=>o.type===TYPE);if(activeTag!=='all')d=d.filter(o=>o.tags.includes(activeTag));if(searchQ)d=d.filter(o=>o.title.toLowerCase().includes(searchQ)||o.org.toLowerCase().includes(searchQ));return d;}
+function render(){const grid=document.getElementById('mainGrid');const d=filtered();grid.innerHTML='';if(d.length===0){document.getElementById('noResults').classList.remove('hidden');return;}document.getElementById('noResults').classList.add('hidden');d.forEach((o,i)=>grid.appendChild(buildCard(o,i)));animateBars(grid);}
+function renderCountdown(){const cg=document.getElementById('countdownGrid');const hacks=OPPORTUNITIES.filter(o=>o.type==='hackathon').sort((a,b)=>daysLeft(a.deadline)-daysLeft(b.deadline));cg.innerHTML=hacks.map(o=>{const d=Math.max(0,daysLeft(o.deadline));const pct=Math.max(0,100-d*2);return`<div class="countdown-card"><div class="cc-name">${o.title}</div><div class="cc-org">${o.org}</div><div class="cc-days">${d}<span> days left</span></div><div class="cc-bar"><div class="cc-bar-fill" style="width:${pct}%"></div></div></div>`;}).join('');}
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');activeTag=c.dataset.tag;render();}));
+document.getElementById('filterInput').addEventListener('input',e=>{searchQ=e.target.value.toLowerCase();render();});
+document.getElementById('globalSearch').addEventListener('input',e=>{searchQ=e.target.value.toLowerCase();render();});
+renderCountdown();render();
+})();
+</script>
+</body></html>
