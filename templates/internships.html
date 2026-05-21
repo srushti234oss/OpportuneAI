@@ -28,29 +28,34 @@
     <nav class="sidebar-nav">
   <a href="/" class="nav-item"><span class="nav-icon">⊞</span><span>Home</span></a>
 
-  <a href="/scholarships/" class="nav-item">
+  <a href="/" class="nav-item">
+    <span class="nav-icon">⌘</span><span>Home</span>
+</a>
+
+<a href="/scholarships/" class="nav-item">
     <span class="nav-icon">🎓</span><span>Scholarships</span>
-  </a>
+</a>
 
-  <a href="/internships/" class="nav-item active">
+<a href="/internships/" class="nav-item active">
     <span class="nav-icon">💼</span><span>Internships</span>
-  </a>
+</a>
 
-  <a href="/hackathons/" class="nav-item">
+<a href="/hackathons/" class="nav-item">
     <span class="nav-icon">⚡</span><span>Hackathons</span>
-  </a>
+</a>
 
-  <a href="/fellowships/" class="nav-item">
-    <span class="nav-icon">🔬</span><span>Fellowships</span>
-  </a>
+<a href="/fellowships/" class="nav-item">
+    <span class="nav-icon">♟</span><span>Fellowships</span>
+</a>
 
-  <a href="/tracker/" class="nav-item">
+<a href="/tracker/" class="nav-item">
     <span class="nav-icon">◎</span><span>My Tracker</span>
     <span class="nav-badge" id="trackerBadge">0</span>
-  </a>
+</a>
 
-  <a href="/skillmap/" class="nav-item">
-    <span class="nav-icon">◈</span><span>Skill Map</span>
+<a href="/skillmap/" class="nav-item">
+    <span class="nav-icon">✧</span><span>Skill Map</span>
+</a>
   </a>
 </nav>
   </nav>
@@ -96,7 +101,27 @@
   </section>
 
   <section class="full-grid-section">
-    <div class="full-grid" id="mainGrid"></div>
+    <div class="full-grid">
+
+{% for opportunity in opportunities %}
+<div class="intern-card">
+
+    <h2>{{ opportunity.title }}</h2>
+
+    <p>{{ opportunity.company }}</p>
+
+    <p>{{ opportunity.category }}</p>
+
+    <p>{{ opportunity.description }}</p>
+    <p>{{ opportunity.deadline }}</p>
+    <a href="/save/{{ opportunity.id }}/">
+    <button>Save</button>
+</a>
+
+</div>
+{% endfor %}
+
+</div>
     <div class="no-results hidden" id="noResults"><div class="no-results-icon">◎</div><p>No internships found for this filter.</p></div>
   </section>
 </main>
@@ -114,32 +139,4 @@
 <div class="toast-container" id="toastContainer"></div>
 <script src="{% static 'js/data.js' %}"></script>
 <script src="{% static 'js/app.js' %}"></script>
-<script>
-(function(){
-  const TYPE='internship';
-  let activeTag='all',activeCo='all',searchQ='';
-  function filtered(){
-    let d=OPPORTUNITIES.filter(o=>o.type===TYPE);
-    if(activeCo!=='all') d=d.filter(o=>o.org===activeCo);
-    if(activeTag!=='all') d=d.filter(o=>o.tags.includes(activeTag));
-    if(searchQ) d=d.filter(o=>o.title.toLowerCase().includes(searchQ)||o.org.toLowerCase().includes(searchQ)||o.requiredSkills.some(s=>s.toLowerCase().includes(searchQ)));
-    d.sort((a,b)=>match(b).score-match(a).score);
-    return d;
-  }
-  function render(){
-    const grid=document.getElementById('mainGrid');
-    const d=filtered();
-    grid.innerHTML='';
-    if(d.length===0){document.getElementById('noResults').classList.remove('hidden');return;}
-    document.getElementById('noResults').classList.add('hidden');
-    d.forEach((o,i)=>grid.appendChild(buildCard(o,i)));
-    animateBars(grid);
-  }
-  document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');activeTag=c.dataset.tag;render();}));
-  document.querySelectorAll('.company-chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.company-chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');activeCo=c.dataset.co;render();}));
-  document.getElementById('filterInput').addEventListener('input',e=>{searchQ=e.target.value.toLowerCase();render();});
-  document.getElementById('globalSearch').addEventListener('input',e=>{searchQ=e.target.value.toLowerCase();render();});
-  render();
-})();
-</script>
 </body></html>

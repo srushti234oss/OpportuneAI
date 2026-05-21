@@ -48,7 +48,7 @@
     <span class="nav-icon">🎓</span><span>Scholarships</span>
   </a>
 
-  <a href="/internships/" class="nav-item active">
+  <a href="/internships/" class="nav-item">
     <span class="nav-icon">💼</span><span>Internships</span>
   </a>
 
@@ -60,7 +60,7 @@
     <span class="nav-icon">🔬</span><span>Fellowships</span>
   </a>
 
-  <a href="/tracker/" class="nav-item">
+  <a href="/tracker/" class="nav-item active">
     <span class="nav-icon">◎</span><span>My Tracker</span>
     <span class="nav-badge" id="trackerBadge">0</span>
   </a>
@@ -81,14 +81,76 @@
 
 <div class="kanban" id="kanban"></div>
 
-{% for student in students %}
-<div style="background:white;padding:20px;margin-top:20px;border-radius:10px;">
-    <h2>{{ student.name }}</h2>
-    <p>{{ student.email }}</p>
-    <p>{{ student.branch }}</p>
-    <p>{{ student.skills }}</p>
+<div class="kanban">
+
+    <div class="kb-col">
+        <h2>Saved</h2>
+
+        {% for opportunity in saved_opportunities %}
+        <div class="card">
+            <h3>{{ opportunity.title }}</h3>
+            <p>{{ opportunity.company }}</p>
+            <a href="/apply/{{ opportunity.id }}/">
+    <button>Apply</button>
+</a>
+
+<a href="/remove/{{ opportunity.id }}/">
+    <button>Remove</button>
+</a>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <div class="kb-col">
+        <h2>Applied</h2>
+
+        {% for opportunity in applied_opportunities %}
+        <div class="card">
+            <h3>{{ opportunity.title }}</h3>
+            <p>{{ opportunity.company }}</p>
+            <a href="/accept/{{ opportunity.id }}/">
+    <button>Accept</button>
+</a>
+
+<a href="/reject/{{ opportunity.id }}/">
+    <button>Reject</button>
+</a>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <div class="kb-col">
+        <h2>Accepted</h2>
+
+        {% for opportunity in accepted_opportunities %}
+        <div class="card">
+            <h3>{{ opportunity.title }}</h3>
+            <p>{{ opportunity.company }}</p>
+            <a href="/remove/{{ opportunity.id }}/">
+    <button>Remove</button>
+</a>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <div class="kb-col">
+        <h2>Rejected</h2>
+
+        {% for opportunity in rejected_opportunities %}
+        <div class="card">
+            <h3>{{ opportunity.title }}</h3>
+            <p>{{ opportunity.company }}</p>
+            <a href="/remove/{{ opportunity.id }}/">
+    <button>Remove</button>
+</a>
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
-{% endfor %}
 
 </div>
 
@@ -140,30 +202,35 @@ function colHtml(title,icon,status,colorClass,emptyMsg){
   const opps=ids.map(id=>OPPORTUNITIES.find(o=>o.id===id)).filter(Boolean);
   return`<div class="kb-col ${colorClass}">
     <div class="kb-header"><span>${icon}</span><h3>${title}</h3><span class="kb-count">${opps.length}</span></div>
-    <div class="kb-body">${opps.length===0?`<div class="kb-empty">${emptyMsg}</div>`:opps.map(o=>cardHtml(o,status)).join('')}</div>
-  </div>`;
-}
+    <div class="kb-body">
+      {% for opportunity in saved_opportunities %}
 
-function renderTracker(){
-  const kanban=document.getElementById('kanban');
-  kanban.innerHTML=
-    colHtml('Saved','🔖','saved','kb-saved','Save opportunities from any page using the ♡ button.')+
-    colHtml('Applied','📝','applied','kb-applied','Open a card and click "Mark as Applied" to move it here.')+
-    colHtml('Accepted','🎉','accepted','kb-accepted','Celebrating your wins here! You havve got this.')+
-    colHtml('Rejected','❌','rejected','kb-rejected','Rejections are part of the journey. Keep going!');
+<div class="card">
 
-  const st=getState();
-  const statsRow=document.getElementById('statsRow');
-  statsRow.innerHTML=`
-    <div class="stat-pill"><span class="sp-n" style="color:var(--blue)">${st.saved.length}</span><span class="sp-l">Saved</span></div>
-    <div class="stat-pill"><span class="sp-n" style="color:var(--orange)">${st.applied.length}</span><span class="sp-l">Applied</span></div>
-    <div class="stat-pill"><span class="sp-n" style="color:var(--green)">${st.accepted.length}</span><span class="sp-l">Accepted</span></div>
-    <div class="stat-pill"><span class="sp-n" style="color:var(--red)">${st.rejected.length}</span><span class="sp-l">Rejected</span></div>
-  `;
-}
+    <h2>{{ opportunity.title }}</h2>
 
-window.moveCard=moveCard;window.removeCard=removeCard;
-renderTracker();
-})();
-</script>
-</body></html>
+    <p>{{ opportunity.company }}</p>
+
+    <p>{{ opportunity.category }}</p>
+
+    <p>{{ opportunity.description }}</p>
+
+    <p>{{ opportunity.deadline }}</p>
+    <a href="/apply/{{ opportunity.id }}/">
+    <button>Apply</button>
+</a>
+
+<a href="/remove/{{ opportunity.id }}/">
+    <button>Remove</button>
+</a>
+
+</div>
+
+{% empty %}
+
+<p>No saved opportunities yet.</p>
+
+{% endfor %}
+</div>
+</body>
+</html>

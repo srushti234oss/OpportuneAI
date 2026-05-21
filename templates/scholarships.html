@@ -95,7 +95,23 @@
   </section>
 
   <section class="full-grid-section">
-    <div class="full-grid" id="mainGrid"></div>
+    <div class="full-grid">
+
+{% for scholarship in scholarships %}
+
+<div class="card">
+    <h2>{{ scholarship.title }}</h2>
+    <p>{{ scholarship.provider }}</p>
+    <p>{{ scholarship.description }}</p>
+    <p>{{ scholarship.deadline }}</p>
+    <a href="/save/{{ scholarship.id }}/">
+    <button>Save</button>
+</a>
+</div>
+
+{% endfor %}
+
+</div>
     <div class="no-results hidden" id="noResults"><div class="no-results-icon">◎</div><p>No scholarships found. Try a different filter.</p></div>
   </section>
 </main>
@@ -152,45 +168,5 @@
 
 <script src="{% static 'js/data.js' %}"></script>
 <script src="{% static 'js/app.js' %}"></script>
-<script>
-(function(){
-  const TYPE = 'scholarship';
-  let activeTag = 'all', activeSort = 'match', searchQ = '';
-
-  function filtered() {
-    let d = OPPORTUNITIES.filter(o => o.type===TYPE);
-    if (activeTag!=='all') d = d.filter(o => o.tags.includes(activeTag));
-    if (searchQ) d = d.filter(o => o.title.toLowerCase().includes(searchQ)||o.org.toLowerCase().includes(searchQ));
-    if (activeSort==='match') d.sort((a,b)=>match(b).score-match(a).score);
-    else d.sort((a,b)=>daysLeft(a.deadline)-daysLeft(b.deadline));
-    return d;
-  }
-
-  function render() {
-    const grid = document.getElementById('mainGrid');
-    const nr   = document.getElementById('noResults');
-    const d    = filtered();
-    grid.innerHTML = '';
-    if (d.length===0) { nr.classList.remove('hidden'); return; }
-    nr.classList.add('hidden');
-    d.forEach((o,i) => grid.appendChild(buildCard(o,i)));
-    animateBars(grid);
-  }
-
-  document.querySelectorAll('.chip').forEach(c => {
-    c.addEventListener('click', () => {
-      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-      c.classList.add('active');
-      activeTag = c.dataset.tag;
-      render();
-    });
-  });
-  document.getElementById('filterInput').addEventListener('input', e => { searchQ=e.target.value.toLowerCase(); render(); });
-  document.getElementById('sortSel').addEventListener('change', e => { activeSort=e.target.value; render(); });
-  document.getElementById('globalSearch').addEventListener('input', e => { searchQ=e.target.value.toLowerCase(); render(); });
-
-  render();
-})();
-</script>
 </body>
 </html>
