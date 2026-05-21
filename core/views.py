@@ -15,8 +15,11 @@ def hackathons(request):
 def fellowships(request):
     return render(request, 'fellowships.html')
 
+from .models import StudentProfile
+
 def tracker(request):
-    return render(request, 'tracker.html')
+    students = StudentProfile.objects.all()
+    return render(request, 'tracker.html', {'students': students})
 
 def skillmap(request):
     return render(request, 'skillmap.html')

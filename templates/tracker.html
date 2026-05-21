@@ -78,8 +78,20 @@
 <h1>My Application Tracker</h1>
 <p class="sub">Track every opportunity from saving to acceptance. Move cards between columns as you progress.</p>
 <div class="stats-row" id="statsRow"></div>
+
 <div class="kanban" id="kanban"></div>
+
+{% for student in students %}
+<div style="background:white;padding:20px;margin-top:20px;border-radius:10px;">
+    <h2>{{ student.name }}</h2>
+    <p>{{ student.email }}</p>
+    <p>{{ student.branch }}</p>
+    <p>{{ student.skills }}</p>
 </div>
+{% endfor %}
+
+</div>
+
 </main>
 
 <div class="detail-panel-overlay" id="detailOverlay"><div class="detail-panel"><button class="dp-close" id="dpClose">✕</button><div class="dp-body" id="dpBody"></div></div></div>
