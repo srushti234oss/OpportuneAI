@@ -162,7 +162,7 @@
 <script src="{% static 'js/data.js' %}"></script>
 <script src="{% static 'js/app.js' %}"></script>
 <script>
-(function(){
+{function(){
 function getState(){return{saved:JSON.parse(localStorage.getItem('oai_saved'))||[],applied:JSON.parse(localStorage.getItem('oai_applied'))||[],accepted:JSON.parse(localStorage.getItem('oai_accepted'))||[],rejected:JSON.parse(localStorage.getItem('oai_rejected'))||[]};}
 function setState(k,v){localStorage.setItem('oai_'+k,JSON.stringify(v));}
 
@@ -205,7 +205,7 @@ function colHtml(title,icon,status,colorClass,emptyMsg){
     <div class="kb-body">
       {% for opportunity in saved_opportunities %}
 
-<div class="card">
+<div class="card search-card">
 
     <h2>{{ opportunity.title }}</h2>
 
@@ -232,5 +232,28 @@ function colHtml(title,icon,status,colorClass,emptyMsg){
 
 {% endfor %}
 </div>
+<script>
+const searchInput = document.getElementById("filterInput");
+
+searchInput.addEventListener("keyup", function () {
+
+    let filter = searchInput.value.toLowerCase();
+
+    let cards = document.querySelectorAll(".search-card");
+
+    cards.forEach(card => {
+
+        let text = card.innerText.toLowerCase();
+
+        if(text.includes(filter)){
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+});
+</script>
 </body>
 </html>

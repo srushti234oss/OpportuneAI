@@ -7,6 +7,8 @@ class StudentProfile(models.Model):
         User,
         on_delete=models.CASCADE
     )
+    year = models.CharField(max_length=20, blank=True)
+    college = models.CharField(max_length=200, blank=True)
 
     full_name = models.CharField(max_length=200)
 
@@ -19,6 +21,7 @@ class StudentProfile(models.Model):
     bio = models.TextField()
 
     resume_link = models.URLField(blank=True)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
 
     def __str__(self):
         return self.full_name

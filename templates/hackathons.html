@@ -50,12 +50,18 @@
   <a href="/skillmap/" class="nav-item">
     <span class="nav-icon">◈</span><span>Skill Map</span>
   </a>
+  <a href="/profile/" class="nav-item">
+    <span class="nav-icon">👤</span>
+    <span>Profile</span>
+</a>
 </nav>
 </nav>
 <div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
 </aside>
 <main class="main-content">
-<header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search hackathons…"/></div><div class="topbar-right"><button class="btn-setup" id="openSetupBtn">Set Up My Profile →</button></div></header>
+<header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search hackathons…"/></div><div class="topbar-right"><a href="/logout/" id="logout-btn">
+    ↩ Logout
+</a></div></header>
 <div class="page-hero hack-hero">
 <div class="ph-text"><h1>⚡ Hackathons</h1><p>Build something incredible. Hackathons are the fastest way to get noticed, win prizes, and land PPO offers. No GPA filter — just skill and hustle.</p></div>
 <div class="ph-stat"><span class="ps-num" style="color:#fff">67</span><span class="ps-label" style="color:rgba(255,255,255,0.6)">Active hackathons</span></div>
@@ -74,7 +80,7 @@
 </div></section>
 <section class="full-grid-section">
   {% for hackathon in hackathons %}
-<div class="card">
+<div class="card search-card">
     <h2>{{ hackathon.title }}</h2>
     <p>{{ hackathon.organizer }}</p>
     <p>{{ hackathon.description }}</p>
@@ -91,4 +97,27 @@
 <div class="toast-container" id="toastContainer"></div>
 <script src="{% static 'js/data.js' %}"></script>
 <script src="{% static 'js/app.js' %}"></script>
+<script>
+const searchInput = document.getElementById("filterInput");
+
+searchInput.addEventListener("keyup", function () {
+
+    let filter = searchInput.value.toLowerCase();
+
+    let cards = document.querySelectorAll(".search-card");
+
+    cards.forEach(card => {
+
+        let text = card.innerText.toLowerCase();
+
+        if(text.includes(filter)){
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+});
+</script>
 </body></html>

@@ -19,9 +19,10 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a href="index.html" class="nav-item active">
-      <span class="nav-icon">⊞</span>
-      <span>Home</span>
+    <a href="{% url 'home' %}" class="nav-item active">
+    <span class="nav-icon">⌂</span>
+    <span style="color:#111;">Home</span>
+</a>
     </a>
     <a href="/scholarships/" class="nav-item">
       <span class="nav-icon">🎓</span>
@@ -48,6 +49,10 @@
       <span class="nav-icon">◈</span>
       <span>Skill Map</span>
     </a>
+    <a href="/profile/" class="nav-item">
+    <span class="nav-icon">👤</span>
+    <span>Profile</span>
+</a>
   </nav>
 
   <div class="sidebar-profile" id="sidebarProfile">
@@ -56,8 +61,7 @@
       <strong id="spName">Set up profile</strong>
       <span id="spBranch">Click to get started</span>
     </div>
-    <button class="sp-edit" id="spEditBtn" title="Edit profile">✎</button>
-  </div>
+    
 </aside>
 
 <!-- MAIN CONTENT -->
@@ -74,8 +78,19 @@
         🔔
         <span class="notif-dot"></span>
       </div>
-      <button class="btn-setup" id="openSetupBtn">Set Up My Profile →</button>
+
+
+ <a href="/logout/" id="logout-btn">
+    ↩ Logout
+</a>
+  
+  
+
+
+
     </div>
+    
+     
   </header>
 
   <!-- HERO BANNER -->

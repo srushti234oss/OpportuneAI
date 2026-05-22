@@ -103,8 +103,13 @@ body {
 }
 .nav-item:hover { color: #fff; background: rgba(255,255,255,0.07); }
 .nav-item.active {
-  color: var(--black); background: var(--yellow);
-  font-weight: 600;
+    background: #facc15;
+    color: #111 !important;
+    font-weight: 700;
+}
+
+.nav-item.active span{
+    color:#111 !important;
 }
 .nav-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
 .nav-badge {
@@ -879,4 +884,146 @@ label { font-size: 0.8rem; font-weight: 600; color: var(--gray-700); }
 .remove-btn{
     background:#111827;
     color:white;
+}
+
+#logout-btn{
+    background:#111827;
+    color:white;
+    padding:10px 18px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:0.3s ease;
+}
+
+#logout-btn:hover{
+    background:#ef4444;
+    color:white;
+}
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f4f5f7;
+}
+
+.app-layout{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:250px;
+    background:black;
+    color:white;
+    padding:20px;
+}
+
+.sidebar a{
+    color:white;
+    text-decoration:none;
+}
+
+/* PROFILE AREA */
+
+.profile-container{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:50px;
+}
+
+.profile-card{
+    width:420px;
+    background:white;
+    border-radius:24px;
+    padding:40px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.08);
+}
+
+.profile-avatar{
+    width:120px;
+    height:120px;
+    background:#facc15;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:48px;
+    font-weight:bold;
+    margin:auto;
+    color:black;
+}
+
+.profile-name{
+    text-align:center;
+    font-size:34px;
+    font-weight:700;
+    margin-top:20px;
+    color:#111827;
+}
+
+.profile-branch{
+    text-align:center;
+    color:#6b7280;
+    font-size:18px;
+    margin-bottom:35px;
+}
+
+.profile-info{
+    margin-top:20px;
+}
+
+.profile-info p{
+    font-size:18px;
+    margin:16px 0;
+    color:#111827;
+    line-height:1.6;
+}
+
+.profile-info strong{
+    color:black;
+}
+
+/* BUTTONS */
+
+.profile-buttons{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-top:35px;
+}
+
+.resume-btn,
+.edit-btn{
+    text-decoration:none;
+    text-align:center;
+    padding:16px;
+    border-radius:14px;
+    font-size:17px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.resume-btn{
+    background:#111827;
+    color:white;
+}
+
+.resume-btn:hover{
+    background:#000;
+}
+
+.edit-btn{
+    background:#facc15;
+    color:black;
+}
+
+.edit-btn:hover{
+    background:#eab308;
 }

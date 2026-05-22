@@ -43,15 +43,26 @@
     <span class="nav-badge" id="trackerBadge">0</span>
   </a>
 
+
   <a href="/skillmap/" class="nav-item">
     <span class="nav-icon">◈</span><span>Skill Map</span>
   </a>
+  
+
+<a href="/profile/" class="nav-item">
+    <span class="nav-icon">👤</span>
+    <span>Profile</span>
+</a>
+
+
 </nav>
 </nav>
 <div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
 </aside>
 <main class="main-content">
-<header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search fellowships…"/></div><div class="topbar-right"><button class="btn-setup" id="openSetupBtn">Set Up My Profile →</button></div></header>
+<header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search fellowships…"/></div><div class="topbar-right"><a href="/logout/" id="logout-btn">
+    ↩ Logout
+</a></div></header>
 
 <div class="page-hero fell-hero">
 <div class="ph-text"><h1>🔬 Fellowships</h1><p>Fellowships are the hidden gems — longer, more impactful, and less competitive than internships. They come with mentorship, stipend, and often change career trajectories.</p></div>
@@ -79,7 +90,7 @@
 
 {% for fellowship in fellowships %}
 
-<div class="card">
+<div class="card search-card">
     <h2>{{ fellowship.title }}</h2>
     <p>{{ fellowship.organization }}</p>
     <p>{{ fellowship.description }}</p>
@@ -98,4 +109,31 @@
 <div class="toast-container" id="toastContainer"></div>
 <script src="{% static 'js/data.js' %}"></script>
 <script src="{% static 'js/app.js' %}"></script>
-</body></html>
+...
+</main>
+
+<script>
+const searchInput = document.getElementById("filterInput");
+
+searchInput.addEventListener("keyup", function () {
+
+    let filter = searchInput.value.toLowerCase();
+
+    let cards = document.querySelectorAll(".search-card");
+
+    cards.forEach(card => {
+
+        let text = card.innerText.toLowerCase();
+
+        if(text.includes(filter)){
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+});
+</script>
+</body>
+</html>

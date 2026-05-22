@@ -1,6 +1,10 @@
 from django.urls import path
 from . import views
+from .views import edit_profile
 from .views import remove_opportunity
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -10,7 +14,7 @@ urlpatterns = [
     path('fellowships/', views.fellowships, name='fellowships'),
     path('tracker/', views.tracker, name='tracker'),
     path('skillmap/', views.skillmap, name='skillmap'),
-    path('signup/', views.signup, name='signup'),
+    path('signup/', views.signup_view, name='signup'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('save/<int:id>/', views.save_opportunity),
@@ -18,4 +22,9 @@ urlpatterns = [
     path('accept/<int:id>/', views.accept_opportunity),
     path('reject/<int:id>/', views.reject_opportunity),
     path('remove/<int:id>/', views.remove_opportunity),
+    path('edit-profile/', edit_profile, name='edit_profile'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/', views.profile, name='profile'),
+    path("edit-profile/", views.edit_profile, name="edit_profile"),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
