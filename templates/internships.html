@@ -62,7 +62,25 @@
 </a>
 </nav>
   </nav>
-  <div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
+ <div class="sidebar-profile">
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
+    <div class="sp-info">
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
 </aside>
 <main class="main-content">
   <header class="topbar">
@@ -106,61 +124,87 @@
   </section>
 
   <section class="full-grid-section">
+ 
 
+    <div class="ai-grid">
 
-    <div class="opportunities-grid">
+{% for item in recommendations %}
 
-    {% for opportunity in opportunities %}
+<div class="ai-card">
 
-    <div class="opportunity-card">
+    <h2>{{ item.opportunity.title }}</h2>
 
-        <div class="opportunity-top">
+    <div class="company-name">
+        {{ item.opportunity.company }}
+    </div>
 
-            <h2>{{ opportunity.title }}</h2>
+    <div class="match-score">
+        Match Score: {{ item.score }}%
+    </div>
 
-            <span class="category-badge">
-                {{ opportunity.category }}
-            </span>
+    <div class="prediction
+        {% if item.prediction == 'High Chance' %}
+            high
+        {% elif item.prediction == 'Medium Chance' %}
+            medium
+        {% else %}
+            low
+        {% endif %}
+    ">
+        Prediction: {{ item.prediction }}
+    </div>
 
+    <div class="skills-section">
+
+        <div class="skills-title">
+            Required Skills
         </div>
 
-        <h4>{{ opportunity.company }}</h4>
+       <div class="skill-tags">
 
-        <p class="description">
-            {{ opportunity.description }}
-        </p>
-
-        <div class="skills-container">
-
-          
-    <span class="skill-tag">
-        {{ opportunity.skills_required }}
+    <span class="skill-tag good-skill">
+        {{ item.opportunity.required_skills }}
     </span>
 
+</div>
 
+    </div>
+
+    <div class="skills-section">
+
+        <div class="skills-title">
+            Missing Skills
         </div>
 
-        <div class="opportunity-footer">
+        <div class="skill-tags">
 
-            <span class="deadline">
-                {{ opportunity.deadline }}
-            </span>
+            {% for skill in item.missing_skills %}
 
-            <a href="{{ opportunity.link }}"
-               target="_blank"
-               class="apply-btn">
+                <span class="skill-tag missing-skill">
+                    {{ skill }}
+                </span>
 
-               Apply Now
+            {% empty %}
 
-            </a>
+                <span class="skill-tag good-skill">
+                    No Missing Skills
+                </span>
+
+            {% endfor %}
 
         </div>
 
     </div>
-
-    {% endfor %}
+   
 
 </div>
+
+{% endfor %}
+
+</div>
+
+
+    <div class="no-results hidden" id="noResults"><div class="no-results-icon">◎</div><p>No internships found for this filter.</p></div>
   </section>
 </main>
 

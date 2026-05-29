@@ -1,4 +1,7 @@
 {% load static %}
+<script>
+    const USER_NAME = "{{ request.user.studentprofile.full_name }}";
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,12 +58,25 @@
 </a>
   </nav>
 
-  <div class="sidebar-profile" id="sidebarProfile">
-    <div class="sp-avatar" id="spAvatar">?</div>
+  <div class="sidebar-profile">
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
     <div class="sp-info">
-      <strong id="spName">Set up profile</strong>
-      <span id="spBranch">Click to get started</span>
-    </div>
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
     
 </aside>
 
@@ -120,39 +136,6 @@
       </div>
     </div>
   </section>
-
-
-  
-  <section class="recommendation-section">
-
-    <h2>Recommended Opportunities</h2>
-
-    {% for item in recommended_opportunities %}
-
-    <div class="recommendation-card">
-
-        <h3>{{ item.opportunity.title }}</h3>
-
-        <p>{{ item.opportunity.company }}</p>
-
-        <p>Skills Required:
-            {{ item.opportunity.skills_required }}
-        </p>
-
-        <p class="match-score">
-            Match Score: {{ item.score }}%
-        </p>
-
-        <a href="{{ item.opportunity.link }}" target="_blank">
-            Apply Now
-        </a>
-
-    </div>
-
-    {% endfor %}
-
-</section>
-
 
   <!-- UPCOMING DEADLINES TICKER -->
   <div class="deadline-ticker" id="deadlineTicker">
@@ -232,6 +215,70 @@
       </a>
     </div>
   </section>
+
+
+<section class="ai-recommendations">
+
+    <h2>AI Recommended Opportunities</h2>
+
+    <div class="recommendation-grid">
+
+        {% for item in recommendations %}
+
+        <div class="recommendation-card">
+
+            <h3>
+                {{ item.opportunity.title }}
+            </h3>
+
+            <p>
+                {{ item.opportunity.company }}
+            </p>
+
+            <p>
+                {{ item.opportunity.category }}
+            </p>
+
+            <p>
+                Match Score:
+                {{ item.score }}%
+            </p>
+<p class="prediction">
+
+    Prediction:
+    {{ item.prediction }}
+
+</p>
+            <p>
+                Skills:
+                {{ item.opportunity.required_skills }}
+            </p>
+            <p>
+
+    <strong>Missing Skills:</strong>
+
+    {% for skill in item.missing_skills %}
+
+        <span class="missing-skill">
+            {{ skill }}
+        </span>
+
+    {% endfor %}
+
+</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+
+
+
 
   <!-- TOP MATCHES (personalised recommendations) -->
   <section class="top-matches">

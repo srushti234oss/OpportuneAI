@@ -77,7 +77,25 @@
     <span>Profile</span>
 </a>
 </nav>
-<div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
+<div class="sidebar-profile">
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
+    <div class="sp-info">
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
 </aside>
 <main class="main-content">
 <header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search…"/></div><div class="topbar-right"><button class="btn-setup" id="openSetupBtn">Set Up My Profile →</button></div></header>

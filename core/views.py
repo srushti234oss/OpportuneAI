@@ -1,4 +1,4 @@
-from difflib import SequenceMatcher
+
 from django.shortcuts import render
 from .models import Opportunity
 from .models import Scholarship
@@ -9,41 +9,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, redirect
 from django.contrib.auth.decorators import login_required
 from .models import StudentProfile
-
-
-def calculate_match_score(student_skills, required_skills):
-
-    student_skills = student_skills.lower().split(',')
-
-    required_skills = required_skills.lower().split(',')
-
-    matched = 0
-
-    for req_skill in required_skills:
-
-        req_skill = req_skill.strip()
-
-        for stu_skill in student_skills:
-
-            stu_skill = stu_skill.strip()
-
-            similarity = SequenceMatcher(
-                None,
-                stu_skill,
-                req_skill
-            ).ratio()
-
-            if similarity > 0.6:
-                matched += 1
-                break
-
-    if len(required_skills) == 0:
-        return 0
-
-    score = (matched / len(required_skills)) * 100
-
-    return round(score, 2)
-
+from .ai_engine import get_recommended_opportunities
+from .ai_engine import get_recommended_fellowships
+from .ai_engine import get_recommended_scholarships
+from .ai_engine import get_recommended_hackathons
+from .models import SavedOpportunity
 
 def signup_view(request):
 
@@ -106,72 +76,101 @@ def logout_view(request):
     return redirect('/login/')
 
 
+
 @login_required
 def home(request):
 
-    opportunities = Opportunity.objects.all()
+    profile = StudentProfile.objects.filter(
+        user=request.user
+    ).first()
 
-    profile = StudentProfile.objects.first()
+    recommendations = []
+
+    if profile:
+        recommendations = get_recommended_opportunities(
+            profile
+        )
 
     return render(request, 'index.html', {
-        'opportunities': opportunities,
-        'profile': profile,
+        'recommendations': recommendations,
+        'profile': profile
     })
+
 
 
 
 @login_required
 def scholarships(request):
 
-    scholarships = Opportunity.objects.filter(
-        category="Scholarship"
-    )
+    student = StudentProfile.objects.get(user=request.user)
 
-    return render(request,
-                  'scholarships.html',
-                  {'scholarships': scholarships})
+    recommendations = get_recommended_scholarships(student)
+
+    return render(request, 'scholarships.html', {
+        'recommendations': recommendations
+    })
 
 
 @login_required
 def internships(request):
-    opportunities = Opportunity.objects.filter(category="Internship")
-    return render(request, 'internships.html', {'opportunities': opportunities})
+
+    student = StudentProfile.objects.get(user=request.user)
+
+    recommendations = get_recommended_opportunities(student)
+
+    return render(request, 'internships.html', {
+        'recommendations': recommendations
+    })
 
 @login_required
 def hackathons(request):
 
-    hackathons = Opportunity.objects.filter(
-        category="Hackathon"
-    )
+    student = StudentProfile.objects.get(user=request.user)
 
-    return render(request,
-                  'hackathons.html',
-                  {'hackathons': hackathons})
+    recommendations = get_recommended_hackathons(student)
 
-
+    return render(request, 'hackathons.html', {
+        'recommendations': recommendations
+    })
 
 @login_required
 def fellowships(request):
 
-    fellowships = Opportunity.objects.filter(
-        category="Fellowship"
-    )
+    student = StudentProfile.objects.get(user=request.user)
 
-    return render(request,
-                  'fellowships.html',
-                  {'fellowships': fellowships})
+    recommendations = get_recommended_fellowships(student)
 
+    return render(request, 'fellowships.html', {
+        'recommendations': recommendations
+    })
 
+from .models import StudentProfile
 
-@login_required
+@login_required(login_url='/login/')
 def tracker(request):
 
-    opportunities = Opportunity.objects.all()
+    saved_opportunities = SavedOpportunity.objects.filter(
+        user=request.user
+    )
 
-    return render(request,
-                  'tracker.html',
-                  {'opportunities': opportunities})
+    saved = saved_opportunities.filter(status='saved')
 
+    applied = saved_opportunities.filter(status='applied')
+
+    accepted = saved_opportunities.filter(status='accepted')
+
+    rejected = saved_opportunities.filter(status='rejected')
+
+    return render(request, 'tracker.html', {
+
+        'saved_opportunities': saved,
+
+        'applied_opportunities': applied,
+
+        'accepted_opportunities': accepted,
+
+        'rejected_opportunities': rejected,
+    })
 
 @login_required(login_url='/login/')
 def skillmap(request):
@@ -180,88 +179,104 @@ def skillmap(request):
 
 @login_required(login_url='/login/')
 def save_opportunity(request, id):
+ opportunity = Opportunity.objects.get(id=id)
+ SavedOpportunity.objects.create(
+    user=request.user,
+    opportunity=opportunity,
+    status='saved'
+    )
+ return redirect('/tracker/')
 
-    opportunity = Opportunity.objects.get(id=id)
-
-    opportunity.saved_by.add(request.user)
-
-    return redirect('/tracker/')
 @login_required
 def remove_opportunity(request, id):
-    opportunity = Opportunity.objects.get(id=id)
 
-    opportunity.saved_by.remove(request.user)
+    item = SavedOpportunity.objects.get(id=id)
+
+    item.delete()
 
     return redirect('/tracker/')
-@login_required(login_url='/login/')
+
+
+@login_required
 def apply_opportunity(request, id):
 
-    opportunity = Opportunity.objects.get(id=id)
+    item = SavedOpportunity.objects.get(id=id)
 
-    opportunity.status = 'applied'
+    item.status = 'applied'
 
-    opportunity.save()
+    item.save()
 
     return redirect('/tracker/')
 
-
-@login_required(login_url='/login/')
+@login_required
 def accept_opportunity(request, id):
 
-    opportunity = Opportunity.objects.get(id=id)
+    item = SavedOpportunity.objects.get(id=id)
 
-    opportunity.status = 'accepted'
+    item.status = 'accepted'
 
-    opportunity.save()
+    item.save()
 
     return redirect('/tracker/')
 
 
-@login_required(login_url='/login/')
+@login_required
 def reject_opportunity(request, id):
 
-    opportunity = Opportunity.objects.get(id=id)
+    item = SavedOpportunity.objects.get(id=id)
 
-    opportunity.status = 'rejected'
+    item.status = 'rejected'
 
-    opportunity.save()
+    item.save()
 
     return redirect('/tracker/')
+
+
 
 @login_required
 def profile(request):
 
-    profile, created = StudentProfile.objects.get_or_create(
-        user=request.user
-    )
+    profile = StudentProfile.objects.filter(user=request.user).first()
 
-    context = {
+    return render(request, 'profile.html', {
         'profile': profile
-    }
-
-    return render(request, 'profile.html', context)
-
-
+    })
 @login_required
 def edit_profile(request):
 
     profile, created = StudentProfile.objects.get_or_create(
-        user=request.user
-    )
+    user=request.user,
+    defaults={
+        'full_name': '',
+        'branch': '',
+        'skills': '',
+        'cgpa': 0,
+        'bio': '',
+        'resume_link': ''
+    }
+)
 
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        profile.full_name = request.POST.get('full_name')
-        profile.branch = request.POST.get('branch')
-        profile.skills = request.POST.get('skills')
-        profile.cgpa = request.POST.get('cgpa')
-        profile.bio = request.POST.get('bio')
+        profile.full_name = request.POST.get("full_name")
 
+        profile.branch = request.POST.get("branch")
+
+        profile.skills = request.POST.get("skills")
+
+        profile.cgpa = request.POST.get("cgpa")
+
+        profile.bio = request.POST.get("bio")
+
+        profile.resume_link = request.POST.get("resume_link")
+        if request.FILES.get('resume'):
+            profile.resume = request.FILES.get('resume')
+        
+        profile.user = request.user
         profile.save()
 
-        return redirect('profile')
+        return redirect("/profile/")
 
-    return render(request, 'edit_profile.html', {
-        'profile': profile
+    return render(request, "edit_profile.html", {
+        "profile": profile
     })
-

@@ -70,190 +70,131 @@
   </a>
 </nav>
 </nav>
-<div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
+<div class="sidebar-profile">
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
+    <div class="sp-info">
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
 </aside>
 <main class="main-content">
 <header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search…"/></div><div class="topbar-right"><button class="btn-setup" id="openSetupBtn">Set Up My Profile →</button></div></header>
 <div class="tracker-page">
 <h1>My Application Tracker</h1>
 <p class="sub">Track every opportunity from saving to acceptance. Move cards between columns as you progress.</p>
-<div class="stats-row" id="statsRow"></div>
 
-<div class="kanban" id="kanban"></div>
+<div class="tracker-board">
 
-<div class="kanban">
-
-    <div class="kb-col">
+    <!-- SAVED -->
+    <div class="tracker-column">
         <h2>Saved</h2>
 
-        {% for opportunity in saved_opportunities %}
-        <div class="card">
-            <h3>{{ opportunity.title }}</h3>
-            <p>{{ opportunity.company }}</p>
-            <a href="/apply/{{ opportunity.id }}/">
-    <button>Apply</button>
-</a>
+        {% for item in saved_opportunities %}
+        <div class="tracker-card">
 
-<a href="/remove/{{ opportunity.id }}/">
-    <button>Remove</button>
-</a>
+            <h3>{{ item.opportunity.title }}</h3>
+            <p>{{ item.opportunity.company }}</p>
+
+            <div class="tracker-actions">
+                <a href="{% url 'apply_opportunity' item.id %}">
+                    <button class="tracker-btn apply-btn">
+                        Apply
+                    </button>
+                </a>
+
+                <a href="{% url 'remove_opportunity' item.id %}">
+                    <button class="tracker-btn remove-btn">
+                        Remove
+                    </button>
+                </a>
+            </div>
+
         </div>
+        {% empty %}
+        <p class="empty-text">No saved opportunities</p>
         {% endfor %}
     </div>
 
-
-    <div class="kb-col">
+    <!-- APPLIED -->
+    <div class="tracker-column">
         <h2>Applied</h2>
 
-        {% for opportunity in applied_opportunities %}
-        <div class="card">
-            <h3>{{ opportunity.title }}</h3>
-            <p>{{ opportunity.company }}</p>
-            <a href="/accept/{{ opportunity.id }}/">
-    <button>Accept</button>
-</a>
+        {% for item in applied_opportunities %}
+        <div class="tracker-card">
 
-<a href="/reject/{{ opportunity.id }}/">
-    <button>Reject</button>
-</a>
+            <h3>{{ item.opportunity.title }}</h3>
+            <p>{{ item.opportunity.company }}</p>
+
+            <div class="tracker-actions">
+                <a href="{% url 'accept_opportunity' item.id %}">
+                    <button class="tracker-btn success-btn">
+                        Accept
+                    </button>
+                </a>
+
+                <a href="{% url 'reject_opportunity' item.id %}">
+                    <button class="tracker-btn reject-btn">
+                        Reject
+                    </button>
+                </a>
+            </div>
+
         </div>
+        {% empty %}
+        <p class="empty-text">No applied opportunities</p>
         {% endfor %}
     </div>
 
-
-    <div class="kb-col">
+    <!-- ACCEPTED -->
+    <div class="tracker-column">
         <h2>Accepted</h2>
 
-        {% for opportunity in accepted_opportunities %}
-        <div class="card">
-            <h3>{{ opportunity.title }}</h3>
-            <p>{{ opportunity.company }}</p>
-            <a href="/remove/{{ opportunity.id }}/">
-    <button>Remove</button>
-</a>
+        {% for item in accepted_opportunities %}
+        <div class="tracker-card">
+
+            <h3>{{ item.opportunity.title }}</h3>
+            <p>{{ item.opportunity.company }}</p>
+
         </div>
+        {% empty %}
+        <p class="empty-text">No accepted opportunities</p>
         {% endfor %}
     </div>
 
-
-    <div class="kb-col">
+    <!-- REJECTED -->
+    <div class="tracker-column">
         <h2>Rejected</h2>
 
-        {% for opportunity in rejected_opportunities %}
-        <div class="card">
-            <h3>{{ opportunity.title }}</h3>
-            <p>{{ opportunity.company }}</p>
-            <a href="/remove/{{ opportunity.id }}/">
-    <button>Remove</button>
-</a>
+        {% for item in rejected_opportunities %}
+        <div class="tracker-card">
+
+            <h3>{{ item.opportunity.title }}</h3>
+            <p>{{ item.opportunity.company }}</p>
+
         </div>
+        {% empty %}
+        <p class="empty-text">No rejected opportunities</p>
         {% endfor %}
     </div>
 
 </div>
 
-</div>
+
 
 </main>
 
-<div class="detail-panel-overlay" id="detailOverlay"><div class="detail-panel"><button class="dp-close" id="dpClose">✕</button><div class="dp-body" id="dpBody"></div></div></div>
-<div class="modal-overlay" id="profileModal"><div class="modal-box"><button class="modal-close" id="closeModal">✕</button><div class="modal-header"><div class="modal-step-bar"><div class="msb-step active" data-step="1">1<span>Basics</span></div><div class="msb-line"></div><div class="msb-step" data-step="2">2<span>Skills</span></div><div class="msb-line"></div><div class="msb-step" data-step="3">3<span>Interests</span></div></div></div><div class="modal-step-content active" id="step1"><h2>Tell us about yourself</h2><p class="modal-sub">Powers your AI recommendations</p><div class="form-row"><div class="fg"><label>Full Name</label><input type="text" id="fName" class="fi"></div><div class="fg"><label>Branch</label><input type="text" id="fBranch" class="fi"></div></div><div class="form-row"><div class="fg"><label>Year</label><select id="fYear" class="fi"><option value="1">1st</option><option value="2">2nd</option><option value="3" selected>3rd</option><option value="4">4th</option></select></div><div class="fg"><label>College</label><input type="text" id="fCollege" class="fi"></div></div><div class="fg"><label>GPA</label><div class="slider-row"><input type="range" id="fGpa" min="0" max="10" step="0.1" value="7.5" class="gpa-range"><div class="gpa-val" id="gpaVal">7.5</div></div><div class="gpa-desc" id="gpaDesc">Good</div></div><button class="btn-primary full" onclick="goStep(2)">Next →</button></div><div class="modal-step-content" id="step2"><h2>Your Skills</h2><p class="modal-sub">Click to select</p><div class="skill-grid" id="skillGrid"></div><div class="selected-preview" id="skillPreview"></div><div class="step-nav"><button class="btn-outline" onclick="goStep(1)">← Back</button><button class="btn-primary" onclick="goStep(3)">Next →</button></div></div><div class="modal-step-content" id="step3"><h2>Your Interests</h2><p class="modal-sub">Click to select</p><div class="skill-grid" id="interestGrid"></div><div class="selected-preview" id="interestPreview"></div><div class="step-nav"><button class="btn-outline" onclick="goStep(2)">← Back</button><button class="btn-primary full" id="saveProfileBtn">Save ✦</button></div></div></div></div>
-<div class="toast-container" id="toastContainer"></div>
-<script src="{% static 'js/data.js' %}"></script>
-<script src="{% static 'js/app.js' %}"></script>
-<script>
-{function(){
-function getState(){return{saved:JSON.parse(localStorage.getItem('oai_saved'))||[],applied:JSON.parse(localStorage.getItem('oai_applied'))||[],accepted:JSON.parse(localStorage.getItem('oai_accepted'))||[],rejected:JSON.parse(localStorage.getItem('oai_rejected'))||[]};}
-function setState(k,v){localStorage.setItem('oai_'+k,JSON.stringify(v));}
-
-function moveCard(id,from,to){
-  let fromArr=JSON.parse(localStorage.getItem('oai_'+from))||[];
-  let toArr=JSON.parse(localStorage.getItem('oai_'+to))||[];
-  fromArr=fromArr.filter(i=>i!==id);
-  if(!toArr.includes(id))toArr.push(id);
-  setState(from,fromArr);setState(to,toArr);
-  renderTracker();updateTrackerBadge();
-  if(to==='accepted')toast('Congratulations! 🎉','success');
-  else toast('Moved to '+to,'');
-}
-function removeCard(id,from){
-  let arr=JSON.parse(localStorage.getItem('oai_'+from))||[];
-  arr=arr.filter(i=>i!==id);setState(from,arr);renderTracker();updateTrackerBadge();toast('Removed');
-}
-
-function cardHtml(opp,status){
-  const{text:dl}=fmtDeadline(opp.deadline);
-  let actions='';
-  if(status==='saved')actions=`<button class="kb-btn" onclick="moveCard(${opp.id},'saved','applied')">Mark Applied</button><button class="kb-btn danger" onclick="removeCard(${opp.id},'saved')">Remove</button>`;
-  else if(status==='applied')actions=`<button class="kb-btn success" onclick="moveCard(${opp.id},'applied','accepted')">Got In! 🎉</button><button class="kb-btn" onclick="moveCard(${opp.id},'applied','rejected')">Rejected</button><button class="kb-btn danger" onclick="removeCard(${opp.id},'applied')">Remove</button>`;
-  else if(status==='accepted')actions=`<button class="kb-btn danger" onclick="removeCard(${opp.id},'accepted')">Remove</button>`;
-  else if(status==='rejected')actions=`<button class="kb-btn" onclick="moveCard(${opp.id},'rejected','applied')">Re-apply</button><button class="kb-btn danger" onclick="removeCard(${opp.id},'rejected')">Remove</button>`;
-  return`<div class="kb-card" onclick="if(event.target.tagName!=='BUTTON')openDetail(OPPORTUNITIES.find(o=>o.id===${opp.id}))">
-    <div class="kb-card-title">${opp.title}</div>
-    <div class="kb-card-org">${opp.org} · <span class="oc-type type-${opp.type}" style="font-size:0.6rem;padding:0.1rem 0.4rem">${opp.type}</span></div>
-    <div class="kb-card-dl">${dl}</div>
-    <div class="kb-card-actions">${actions}</div>
-  </div>`;
-}
-
-function colHtml(title,icon,status,colorClass,emptyMsg){
-  const st=getState();
-  const ids=st[status]||[];
-  const opps=ids.map(id=>OPPORTUNITIES.find(o=>o.id===id)).filter(Boolean);
-  return`<div class="kb-col ${colorClass}">
-    <div class="kb-header"><span>${icon}</span><h3>${title}</h3><span class="kb-count">${opps.length}</span></div>
-    <div class="kb-body">
-      {% for opportunity in saved_opportunities %}
-
-<div class="card search-card">
-
-    <h2>{{ opportunity.title }}</h2>
-
-    <p>{{ opportunity.company }}</p>
-
-    <p>{{ opportunity.category }}</p>
-
-    <p>{{ opportunity.description }}</p>
-
-    <p>{{ opportunity.deadline }}</p>
-    <a href="/apply/{{ opportunity.id }}/">
-    <button>Apply</button>
-</a>
-
-<a href="/remove/{{ opportunity.id }}/">
-    <button>Remove</button>
-</a>
-
-</div>
-
-{% empty %}
-
-<p>No saved opportunities yet.</p>
-
-{% endfor %}
-</div>
-<script>
-const searchInput = document.getElementById("filterInput");
-
-searchInput.addEventListener("keyup", function () {
-
-    let filter = searchInput.value.toLowerCase();
-
-    let cards = document.querySelectorAll(".search-card");
-
-    cards.forEach(card => {
-
-        let text = card.innerText.toLowerCase();
-
-        if(text.includes(filter)){
-            card.style.display = "block";
-        } else {
-            card.style.display = "none";
-        }
-
-    });
-
-});
-</script>
 </body>
 </html>

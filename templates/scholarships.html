@@ -42,10 +42,24 @@
 </a>
   </nav>
   <div class="sidebar-profile">
-    <div class="sp-avatar" id="spAvatar">?</div>
-    <div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div>
-    <button class="sp-edit" id="spEditBtn">✎</button>
-  </div>
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
+    <div class="sp-info">
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
 </aside>
 
 <main class="main-content">
@@ -103,14 +117,57 @@
   <section class="full-grid-section">
     <div class="full-grid">
 
-{% for scholarship in scholarships %}
+{% for item in recommendations %}
 
 <div class="card search-card">
-    <h2>{{ scholarship.title }}</h2>
-    <p>{{ scholarship.provider }}</p>
-    <p>{{ scholarship.description }}</p>
-    <p>{{ scholarship.deadline }}</p>
-    <a href="/save/{{ scholarship.id }}/">
+    <h2>{{ item.scholarship.title }}</h2>
+    <p>{{ item.scholarship.provider }}</p>
+    <p>{{ item.scholarship.description }}</p>
+    <p>{{ item.scholarship.deadline }}</p>
+    <p>
+    Match Score: {{ item.score }}%
+</p>
+
+<p class="prediction">
+    Prediction: {{ item.prediction }}
+</p>
+
+<div class="skills-section">
+
+    <div class="skills-title">
+        Required Skills
+    </div>
+
+    <div class="skill-tags">
+
+        <span class="skill-tag good-skill">
+            {{ item.scholarship.required_skills }}
+        </span>
+
+    </div>
+
+</div>
+
+<div class="skills-section">
+
+    <div class="skills-title">
+        Missing Skills
+    </div>
+
+    <div class="skill-tags">
+
+        {% for skill in item.missing_skills %}
+
+            <span class="skill-tag missing-skill">
+                {{ skill }}
+            </span>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+    <a href="/save/{{ item.scholarship.id }}/">
     <button>Save</button>
 </a>
 </div>

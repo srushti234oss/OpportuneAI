@@ -57,7 +57,26 @@
 
 </nav>
 </nav>
-<div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
+
+<div class="sidebar-profile">
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
+    <div class="sp-info">
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
 </aside>
 <main class="main-content">
 <header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search fellowships…"/></div><div class="topbar-right"><a href="/logout/" id="logout-btn">
@@ -88,19 +107,63 @@
 </div>
 </div></section>
 
-{% for fellowship in fellowships %}
+{% for item in recommendations %}
 
-<div class="card search-card">
-    <h2>{{ fellowship.title }}</h2>
-    <p>{{ fellowship.organization }}</p>
-    <p>{{ fellowship.description }}</p>
-    <p>{{ fellowship.deadline }}</p>
-    <a href="/save/{{ fellowship.id }}/">
-    <button>Save</button>
-</a>
+<div class="opportunity-card">
+
+    <h2>{{ item.fellowship.title }}</h2>
+
+    <p>{{ item.fellowship.organization }}</p>
+
+    <p>
+        Match Score: {{ item.score }}%
+    </p>
+
+    <p class="prediction">
+        Prediction: {{ item.prediction }}
+    </p>
+
+    <div class="skills-section">
+
+        <div class="skills-title">
+            Required Skills
+        </div>
+
+        <div class="skill-tags">
+
+            <p>
+    Skills: {{ item.fellowship.required_skills }}
+</p>
+
+        </div>
+
+    </div>
+
+    <div class="skills-section">
+
+        <div class="skills-title">
+            Missing Skills
+        </div>
+
+        <div class="skill-tags">
+
+            {% for skill in item.missing_skills %}
+
+                <span class="skill-tag missing-skill">
+                    {{ skill }}
+                </span>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
 </div>
 
 {% endfor %}
+
+
 <div class="full-grid" id="mainGrid"></div><div class="no-results hidden" id="noResults"><div class="no-results-icon">🔬</div><p>No fellowships found.</p></div></section>
 </main>
 

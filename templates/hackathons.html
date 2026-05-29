@@ -56,7 +56,25 @@
 </a>
 </nav>
 </nav>
-<div class="sidebar-profile"><div class="sp-avatar" id="spAvatar">?</div><div class="sp-info"><strong id="spName">Set up profile</strong><span id="spBranch">Click to start</span></div><button class="sp-edit" id="spEditBtn">✎</button></div>
+<div class="sidebar-profile">
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
+    <div class="sp-info">
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
 </aside>
 <main class="main-content">
 <header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search hackathons…"/></div><div class="topbar-right"><a href="/logout/" id="logout-btn">
@@ -79,13 +97,56 @@
 </div>
 </div></section>
 <section class="full-grid-section">
-  {% for hackathon in hackathons %}
+  {% for item in recommendations %}
 <div class="card search-card">
-    <h2>{{ hackathon.title }}</h2>
-    <p>{{ hackathon.organizer }}</p>
-    <p>{{ hackathon.description }}</p>
-    <p>{{ hackathon.deadline }}</p>
-    <a href="/save/{{ hackathon.id }}/">
+    <h2>{{ item.hackathon.title }}</h2>
+    <p>{{ item.hackathon.organizer }}</p>
+    <p>{{ item.hackathon.description }}</p>
+    <p>{{ item.hackathon.deadline }}</p>
+    <p>
+    Match Score: {{ item.score }}%
+</p>
+
+<p class="prediction">
+    Prediction: {{ item.prediction }}
+</p>
+
+<div class="skills-section">
+
+    <div class="skills-title">
+        Required Skills
+    </div>
+
+    <div class="skill-tags">
+
+        <span class="skill-tag good-skill">
+            {{ item.hackathon.required_skills }}
+        </span>
+
+    </div>
+
+</div>
+
+<div class="skills-section">
+
+    <div class="skills-title">
+        Missing Skills
+    </div>
+
+    <div class="skill-tags">
+
+        {% for skill in item.missing_skills %}
+
+            <span class="skill-tag missing-skill">
+                {{ skill }}
+            </span>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+    <a href="/save/{{ item.hackathon.id }}/">
     <button>Save</button>
 </a>
 </div>

@@ -3,103 +3,129 @@ from django.contrib.auth.models import User
 
 class StudentProfile(models.Model):
 
-    class StudentProfile(models.Model):
-
-       user = models.OneToOneField(
+    user = models.OneToOneField(
         User,
         on_delete=models.CASCADE
-       )
+    )
+    year = models.CharField(max_length=20, blank=True)
+    college = models.CharField(max_length=200, blank=True)
 
-       full_name = models.CharField(max_length=200)
+    full_name = models.CharField(max_length=200)
 
-       branch = models.CharField(max_length=100)
+    branch = models.CharField(max_length=100)
 
-       skills = models.TextField()
-  
-       interests = models.TextField(blank=True)
+    skills = models.TextField()
 
-       cgpa = models.FloatField()
+    cgpa = models.FloatField()
 
-       bio = models.TextField()
+    bio = models.TextField()
 
-       experience_level = models.CharField(
-           max_length=100,
-           blank=True
-        )
+    resume_link = models.URLField(blank=True)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
 
-       preferred_category = models.CharField(
-        max_length=100,
-        blank=True
-       )
-
-       resume = models.FileField(
-        upload_to='resumes/',
-        blank=True,
-        null=True
-        )
-
-       def __str__(self):
+    def __str__(self):
         return self.full_name
 
 
 class Opportunity(models.Model):
-   
     title = models.CharField(max_length=200)
-
     company = models.CharField(max_length=200)
-
     category = models.CharField(max_length=100)
-
     description = models.TextField()
-
     deadline = models.DateField()
-
-    link = models.URLField()
-
-    skills_required = models.TextField()
+    saved_by = models.ManyToManyField(User, blank=True)
+    status = models.CharField(max_length=20, default='saved')
+    required_skills = models.TextField(blank=True)
 
     minimum_cgpa = models.FloatField(default=0)
 
-    difficulty_level = models.CharField(
-        max_length=100,
-        default="Beginner"
-    )
-
-    status = models.CharField(
-        max_length=20,
-        default='open'
+    ai_category = models.CharField(
+    max_length=100,
+    blank=True
     )
 
     def __str__(self):
         return self.title
     
-    
 class Scholarship(models.Model):
-    title = models.CharField(max_length=200)
-    provider = models.CharField(max_length=200)
+    title = models.CharField(max_length=255)
+    provider = models.CharField(max_length=255)
     description = models.TextField()
     deadline = models.CharField(max_length=100)
 
+    required_skills = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.title
+    
 class Hackathon(models.Model):
-    title = models.CharField(max_length=200)
-    organizer = models.CharField(max_length=200)
+    title = models.CharField(max_length=255)
+    organizer = models.CharField(max_length=255)
     description = models.TextField()
     deadline = models.CharField(max_length=100)
+
+    required_skills = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.title
 
 class Fellowship(models.Model):
     title = models.CharField(max_length=200)
     organization = models.CharField(max_length=200)
     description = models.TextField()
     deadline = models.CharField(max_length=100)
-STATUS_CHOICES = [
-    ('saved', 'Saved'),
-    ('applied', 'Applied'),
-    ('accepted', 'Accepted'),
-    ('rejected', 'Rejected'),
-]
-
-status = models.CharField(
-    max_length=20,
-    choices=STATUS_CHOICES,
-    default='saved'
+    required_skills = models.CharField(
+    max_length=300,
+    default=""
 )
+
+minimum_cgpa = models.FloatField(
+    default=0.0
+)
+
+ai_category = models.CharField(
+    max_length=100,
+    default="Research"
+)
+def __str__(self):
+        return self.title
+
+class SavedOpportunity(models.Model):
+
+    STATUS_CHOICES = [
+        ('saved', 'Saved'),
+        ('applied', 'Applied'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    opportunity = models.ForeignKey(
+        Opportunity,
+        on_delete=models.CASCADE
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='saved'
+    )
+
+    saved_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.opportunity.title}"

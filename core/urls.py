@@ -17,14 +17,20 @@ urlpatterns = [
     path('signup/', views.signup_view, name='signup'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('save/<int:id>/', views.save_opportunity),
-    path('apply/<int:id>/', views.apply_opportunity),
-    path('accept/<int:id>/', views.accept_opportunity),
-    path('reject/<int:id>/', views.reject_opportunity),
-    path('remove/<int:id>/', views.remove_opportunity),
+    path('save/<int:id>/', views.save_opportunity, name='save_opportunity'),
+
+    path('apply/<int:id>/', views.apply_opportunity, name='apply_opportunity'),
+
+    path('accept/<int:id>/', views.accept_opportunity, name='accept_opportunity'),
+
+    path('reject/<int:id>/', views.reject_opportunity, name='reject_opportunity'),
+
+    path('remove/<int:id>/', views.remove_opportunity, name='remove_opportunity'),
+
     path('edit-profile/', edit_profile, name='edit_profile'),
     path('profile/', views.profile, name='profile'),
     path('profile/', views.profile, name='profile'),
     path("edit-profile/", views.edit_profile, name="edit_profile"),
+    
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

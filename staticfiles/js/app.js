@@ -306,6 +306,7 @@ function openProfileModal() {
     document.getElementById('fCollege').value = S.profile.college||'';
     document.getElementById('fGpa').value     = S.profile.gpa||7.5;
     document.getElementById('gpaVal').textContent = parseFloat(S.profile.gpa||7.5).toFixed(1);
+    toast(`Welcome back, ${USER_NAME}! ✨`)
     updateGpaDesc(S.profile.gpa||7.5);
   }
 
@@ -371,7 +372,6 @@ document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
   };
   save();
   document.getElementById('profileModal').classList.remove('open');
-  toast(`Welcome, ${name.split(' ')[0]}! Your matches are ready ✦`, 'success');
   updateSidebarProfile();
   updateProgressSection();
   renderHome();
@@ -561,6 +561,6 @@ function init() {
   buildTicker();
   renderHome();
   updateTrackerBadge();
-  if (S.profile) toast(`Welcome back, ${S.profile.name.split(' ')[0]}! ✦`,'success');
+ `Welcome back, ${USER_NAME}!`
 }
 init();
