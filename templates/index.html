@@ -121,6 +121,39 @@
     </div>
   </section>
 
+
+  
+  <section class="recommendation-section">
+
+    <h2>Recommended Opportunities</h2>
+
+    {% for item in recommended_opportunities %}
+
+    <div class="recommendation-card">
+
+        <h3>{{ item.opportunity.title }}</h3>
+
+        <p>{{ item.opportunity.company }}</p>
+
+        <p>Skills Required:
+            {{ item.opportunity.skills_required }}
+        </p>
+
+        <p class="match-score">
+            Match Score: {{ item.score }}%
+        </p>
+
+        <a href="{{ item.opportunity.link }}" target="_blank">
+            Apply Now
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</section>
+
+
   <!-- UPCOMING DEADLINES TICKER -->
   <div class="deadline-ticker" id="deadlineTicker">
     <span class="ticker-label">⏰ Upcoming deadlines:</span>

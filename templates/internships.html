@@ -106,28 +106,61 @@
   </section>
 
   <section class="full-grid-section">
-    <div class="full-grid">
 
-{% for opportunity in opportunities %}
-<div class="intern-card search-card">
 
-    <h2>{{ opportunity.title }}</h2>
+    <div class="opportunities-grid">
 
-    <p>{{ opportunity.company }}</p>
+    {% for opportunity in opportunities %}
 
-    <p>{{ opportunity.category }}</p>
+    <div class="opportunity-card">
 
-    <p>{{ opportunity.description }}</p>
-    <p>{{ opportunity.deadline }}</p>
-    <a href="/save/{{ opportunity.id }}/">
-    <button>Save</button>
-</a>
+        <div class="opportunity-top">
+
+            <h2>{{ opportunity.title }}</h2>
+
+            <span class="category-badge">
+                {{ opportunity.category }}
+            </span>
+
+        </div>
+
+        <h4>{{ opportunity.company }}</h4>
+
+        <p class="description">
+            {{ opportunity.description }}
+        </p>
+
+        <div class="skills-container">
+
+          
+    <span class="skill-tag">
+        {{ opportunity.skills_required }}
+    </span>
+
+
+        </div>
+
+        <div class="opportunity-footer">
+
+            <span class="deadline">
+                {{ opportunity.deadline }}
+            </span>
+
+            <a href="{{ opportunity.link }}"
+               target="_blank"
+               class="apply-btn">
+
+               Apply Now
+
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
 
 </div>
-{% endfor %}
-
-</div>
-    <div class="no-results hidden" id="noResults"><div class="no-results-icon">◎</div><p>No internships found for this filter.</p></div>
   </section>
 </main>
 

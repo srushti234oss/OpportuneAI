@@ -1027,3 +1027,119 @@ body{
 .edit-btn:hover{
     background:#eab308;
 }
+
+.recommendation-section{
+    margin-top:40px;
+}
+
+.recommendation-section h2{
+    font-size:28px;
+    margin-bottom:20px;
+}
+
+.recommendation-card{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    margin-bottom:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.match-score{
+    color:#f4b400;
+    font-weight:700;
+    margin-top:10px;
+}
+
+.opportunities-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:24px;
+    margin-top:40px;
+}
+
+.opportunity-card{
+    background:white;
+    padding:24px;
+    border-radius:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.opportunity-card:hover{
+    transform:translateY(-5px);
+}
+
+.opportunity-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.opportunity-top h2{
+    font-size:28px;
+    font-weight:800;
+    color:#0f172a;
+}
+
+.category-badge{
+    background:#facc15;
+    color:black;
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+}
+
+.opportunity-card h4{
+    color:#475569;
+    margin-bottom:12px;
+}
+
+.description{
+    color:#334155;
+    line-height:1.6;
+    margin-bottom:18px;
+}
+
+.skills-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.skill-tag{
+    background:#eef2ff;
+    color:#4338ca;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.opportunity-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.deadline{
+    color:#ef4444;
+    font-weight:700;
+}
+
+.apply-btn{
+    background:black;
+    color:white;
+    text-decoration:none;
+    padding:10px 18px;
+    border-radius:10px;
+    font-weight:700;
+}
+
+.apply-btn:hover{
+    background:#facc15;
+    color:black;
+}

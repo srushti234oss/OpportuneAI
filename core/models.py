@@ -3,41 +3,77 @@ from django.contrib.auth.models import User
 
 class StudentProfile(models.Model):
 
-    user = models.OneToOneField(
+    class StudentProfile(models.Model):
+
+       user = models.OneToOneField(
         User,
         on_delete=models.CASCADE
-    )
-    year = models.CharField(max_length=20, blank=True)
-    college = models.CharField(max_length=200, blank=True)
+       )
 
-    full_name = models.CharField(max_length=200)
+       full_name = models.CharField(max_length=200)
 
-    branch = models.CharField(max_length=100)
+       branch = models.CharField(max_length=100)
 
-    skills = models.TextField()
+       skills = models.TextField()
+  
+       interests = models.TextField(blank=True)
 
-    cgpa = models.FloatField()
+       cgpa = models.FloatField()
 
-    bio = models.TextField()
+       bio = models.TextField()
 
-    resume_link = models.URLField(blank=True)
-    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+       experience_level = models.CharField(
+           max_length=100,
+           blank=True
+        )
 
-    def __str__(self):
+       preferred_category = models.CharField(
+        max_length=100,
+        blank=True
+       )
+
+       resume = models.FileField(
+        upload_to='resumes/',
+        blank=True,
+        null=True
+        )
+
+       def __str__(self):
         return self.full_name
 
 
 class Opportunity(models.Model):
+   
     title = models.CharField(max_length=200)
+
     company = models.CharField(max_length=200)
+
     category = models.CharField(max_length=100)
+
     description = models.TextField()
+
     deadline = models.DateField()
-    saved_by = models.ManyToManyField(User, blank=True)
-    status = models.CharField(max_length=20, default='saved')
+
+    link = models.URLField()
+
+    skills_required = models.TextField()
+
+    minimum_cgpa = models.FloatField(default=0)
+
+    difficulty_level = models.CharField(
+        max_length=100,
+        default="Beginner"
+    )
+
+    status = models.CharField(
+        max_length=20,
+        default='open'
+    )
 
     def __str__(self):
         return self.title
+    
+    
 class Scholarship(models.Model):
     title = models.CharField(max_length=200)
     provider = models.CharField(max_length=200)
