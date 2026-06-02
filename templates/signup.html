@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - OpportuneAI</title>
+
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial;
+        }
+
+        body{
+            background:#f3f4f6;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .auth-card{
+            width:420px;
+            background:white;
+            padding:40px;
+            border-radius:25px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.08);
+        }
+
+        .logo{
+            width:70px;
+            height:70px;
+            background:#facc15;
+            border-radius:18px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-size:24px;
+            font-weight:bold;
+            margin:auto;
+            margin-bottom:20px;
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:10px;
+            color:#111827;
+        }
+
+        .sub{
+            text-align:center;
+            color:#6b7280;
+            margin-bottom:30px;
+        }
+
+        .input-box{
+            margin-bottom:20px;
+        }
+
+        .input-box label{
+            display:block;
+            margin-bottom:8px;
+            font-weight:600;
+            color:#111827;
+        }
+
+        .input-box input{
+            width:100%;
+            padding:14px;
+            border-radius:12px;
+            border:1px solid #d1d5db;
+            font-size:15px;
+        }
+
+        .input-box input:focus{
+            outline:none;
+            border-color:#facc15;
+        }
+
+        .signup-btn{
+            width:100%;
+            padding:15px;
+            background:#111827;
+            color:white;
+            border:none;
+            border-radius:14px;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .signup-btn:hover{
+            background:black;
+        }
+
+        .bottom-text{
+            margin-top:20px;
+            text-align:center;
+            color:#6b7280;
+        }
+
+        .bottom-text a{
+            color:#111827;
+            font-weight:bold;
+            text-decoration:none;
+        }
+
+        .error{
+            background:#fee2e2;
+            color:#b91c1c;
+            padding:12px;
+            border-radius:12px;
+            margin-bottom:20px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="auth-card">
+
+    <div class="logo">
+        OA
+    </div>
+
+    <h1>Create Account</h1>
+
+    <p class="sub">
+        Join OpportuneAI and unlock opportunities
+    </p>
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="input-box">
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Enter username">
+        </div>
+
+        <div class="input-box">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter email">
+        </div>
+
+        <div class="input-box">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter password">
+        </div>
+
+        <button type="submit" class="signup-btn">
+            Create Account
+        </button>
+
+    </form>
+
+    <div class="bottom-text">
+        Already have an account?
+        <a href="/login/">Login</a>
+    </div>
+
+</div>
+
+</body>
+</html>
