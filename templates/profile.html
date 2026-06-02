@@ -1,0 +1,485 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile — OpportuneAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Familjen+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <style>
+        .profile-page {
+            padding: 2rem;
+            max-width: 900px;
+        }
+
+        .profile-hero {
+            background: linear-gradient(135deg, #0d0d0d, #1a1a2e);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(245, 197, 24, 0.08);
+            pointer-events: none;
+        }
+
+        .ph-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--yellow), #f97316);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--black);
+            flex-shrink: 0;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ph-info {
+            flex: 1;
+        }
+
+        .ph-name {
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.3rem;
+            letter-spacing: -0.02em;
+        }
+
+        .ph-branch {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .ph-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .ph-badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+        }
+
+        .ph-badge.yellow {
+            background: rgba(245, 197, 24, 0.15);
+            border-color: rgba(245, 197, 24, 0.3);
+            color: var(--yellow);
+        }
+
+        .ph-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex-shrink: 0;
+        }
+
+        .ph-actions a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: all var(--transition);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .btn-edit {
+            background: var(--yellow);
+            color: var(--black);
+        }
+
+        .btn-edit:hover {
+            background: var(--yellow-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-resume {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-resume:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* STATS ROW */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pstat-card {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.1rem 1.25rem;
+            text-align: center;
+        }
+
+        .pstat-num {
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--black);
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.3rem;
+        }
+
+        .pstat-num.yellow {
+            color: var(--yellow-dark);
+        }
+
+        .pstat-num.green {
+            color: var(--green);
+        }
+
+        .pstat-label {
+            font-size: 0.72rem;
+            color: var(--gray-500);
+        }
+
+        /* INFO GRID */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .pinfo-card {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.4rem;
+        }
+
+        .pinfo-card.full {
+            grid-column: span 2;
+        }
+
+        .pinfo-title {
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pinfo-title span {
+            font-size: 1rem;
+        }
+
+        .pinfo-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.65rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        .pinfo-row:last-child {
+            border-bottom: none;
+        }
+
+        .pinfo-label {
+            color: var(--gray-500);
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .pinfo-val {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .skill-tags-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .stag {
+            background: var(--yellow-light);
+            color: var(--yellow-dark);
+            border: 1px solid #f5c51844;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 0.75rem;
+            border-radius: 100px;
+        }
+
+        .bio-text {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            line-height: 1.7;
+        }
+
+        /* COMPLETION BAR */
+        .completion-wrap {
+            margin-bottom: 1.5rem;
+        }
+
+        .completion-card {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.1rem 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .comp-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            white-space: nowrap;
+        }
+
+        .comp-bar-wrap {
+            flex: 1;
+        }
+
+        .comp-bar-bg {
+            height: 8px;
+            background: var(--gray-100);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .comp-bar-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--yellow), #f97316);
+            transition: width 1s ease;
+        }
+
+        .comp-pct {
+            font-family: 'Familjen Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--yellow-dark);
+            white-space: nowrap;
+        }
+
+        .comp-tip {
+            font-size: 0.72rem;
+            color: var(--gray-500);
+            margin-top: 0.3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-mark">OA</div>
+            <span class="logo-text">Opportune<b>AI</b></span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-item"><span class="nav-icon">⊞</span><span>Home</span></a>
+            <a href="/scholarships/" class="nav-item"><span class="nav-icon">🎓</span><span>Scholarships</span></a>
+            <a href="/internships/" class="nav-item"><span class="nav-icon">💼</span><span>Internships</span></a>
+            <a href="/hackathons/" class="nav-item"><span class="nav-icon">⚡</span><span>Hackathons</span></a>
+            <a href="/fellowships/" class="nav-item"><span class="nav-icon">🔬</span><span>Fellowships</span></a>
+            <a href="/tracker/" class="nav-item"><span class="nav-icon">◎</span><span>My Tracker</span></a>
+            <a href="/skillmap/" class="nav-item"><span class="nav-icon">◈</span><span>Skill Map</span></a>
+            <a href="/profile/" class="nav-item active"><span class="nav-icon">👤</span><span>Profile</span></a>
+        </nav>
+        <div class="sidebar-profile">
+            <div class="sp-avatar">{{ profile.full_name|first|upper }}</div>
+            <div class="sp-info">
+                <strong>{{ profile.full_name }}</strong>
+                <span>{{ profile.branch }} · Year {{ profile.user.studentprofile.year }}</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search">
+                <span class="ts-icon">⌕</span>
+                <input type="text" placeholder="Search opportunities…" />
+            </div>
+            <div class="topbar-right">
+                <a href="/logout/" id="logout-btn">↩ Logout</a>
+            </div>
+        </header>
+
+        <div class="profile-page">
+
+            <!-- HERO -->
+            <div class="profile-hero">
+                <div class="ph-avatar">{{ profile.full_name|first|upper }}</div>
+                <div class="ph-info">
+                    <div class="ph-name">{{ profile.full_name }}</div>
+                    <div class="ph-branch">{{ profile.branch }} · {{ request.user.email }}</div>
+                    <div class="ph-badges">
+                        <span class="ph-badge">CGPA {{ profile.cgpa }}</span>
+                        <span class="ph-badge yellow">✦ OpportuneAI Member</span>
+                        {% if profile.bio %}<span class="ph-badge">{{ profile.bio|truncatechars:30 }}</span>{% endif %}
+                    </div>
+                </div>
+                <div class="ph-actions">
+                    <a href="/edit-profile/" class="btn-edit">✏️ Edit Profile</a>
+                    {% if profile.resume %}
+                    <a href="{{ profile.resume.url }}" class="btn-resume" download>⬇ Download Resume</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- COMPLETION BAR -->
+            <div class="completion-wrap">
+                <div class="completion-card">
+                    <div class="comp-label">Profile Strength</div>
+                    <div class="comp-bar-wrap">
+                        <div class="comp-bar-bg">
+                            <div class="comp-bar-fill"
+                                style="width:{% if profile.skills and profile.cgpa and profile.bio and profile.resume %}100{% elif profile.skills and profile.cgpa and profile.bio %}80{% elif profile.skills and profile.cgpa %}60{% elif profile.skills %}40{% else %}20{% endif %}%">
+                            </div>
+                        </div>
+                        <div class="comp-tip">Add skills, bio, and resume to unlock more matches</div>
+                    </div>
+                    <div class="comp-pct">{% if profile.skills and profile.cgpa and profile.bio and profile.resume %}100{% elif profile.skills and profile.cgpa and profile.bio %}80{% elif profile.skills and profile.cgpa %}60{% elif profile.skills %}40{% else %}20{% endif %}%</div>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="profile-stats">
+                <div class="pstat-card">
+                    <span class="pstat-num yellow">{{ profile.cgpa }}</span>
+                    <div class="pstat-label">CGPA / GPA</div>
+                </div>
+                <div class="pstat-card">
+                    <span class="pstat-num green">{{ profile.skills|default:"—"|wordcount }}</span>
+                    <div class="pstat-label">Skills Listed</div>
+                </div>
+                <div class="pstat-card">
+                    <span class="pstat-num">{{ profile.branch|default:"—"|truncatechars:6 }}</span>
+                    <div class="pstat-label">Branch</div>
+                </div>
+                <div class="pstat-card">
+                    <span class="pstat-num">{% if profile.resume %}✓{% else %}✗{% endif %}</span>
+                    <div class="pstat-label">Resume Uploaded</div>
+                </div>
+            </div>
+
+            <!-- INFO GRID -->
+            <div class="profile-grid">
+
+                <!-- Academic Details -->
+                <div class="pinfo-card">
+                    <div class="pinfo-title"><span>🎓</span> Academic Details</div>
+                    <div class="pinfo-row">
+                        <span class="pinfo-label">Full Name</span>
+                        <span class="pinfo-val">{{ profile.full_name|default:"Not set" }}</span>
+                    </div>
+                    <div class="pinfo-row">
+                        <span class="pinfo-label">Branch</span>
+                        <span class="pinfo-val">{{ profile.branch|default:"Not set" }}</span>
+                    </div>
+                    <div class="pinfo-row">
+                        <span class="pinfo-label">CGPA</span>
+                        <span class="pinfo-val">{{ profile.cgpa|default:"Not set" }}</span>
+                    </div>
+                    <div class="pinfo-row">
+                        <span class="pinfo-label">Email</span>
+                        <span class="pinfo-val">{{ request.user.email }}</span>
+                    </div>
+                    <div class="pinfo-row">
+                        <span class="pinfo-label">Username</span>
+                        <span class="pinfo-val">{{ request.user.username }}</span>
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div class="pinfo-card">
+                    <div class="pinfo-title"><span>📝</span> About Me</div>
+                    {% if profile.bio %}
+                    <p class="bio-text">{{ profile.bio }}</p>
+                    {% else %}
+                    <p class="bio-text" style="color:var(--gray-400)">No bio added yet. <a href="/edit-profile/"
+                            style="color:var(--yellow-dark)">Add one →</a></p>
+                    {% endif %}
+
+                    {% if profile.resume_link %}
+                    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+                        <div class="pinfo-label" style="margin-bottom:0.5rem;">Resume Link</div>
+                        <a href="{{ profile.resume_link }}" target="_blank"
+                            style="font-size:0.82rem;color:var(--blue);font-weight:600;">{{ profile.resume_link|truncatechars:40 }}</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Skills -->
+                <div class="pinfo-card full">
+                    <div class="pinfo-title"><span>⚡</span> My Skills</div>
+                    {% if profile.skills %}
+                    <div class="skill-tags-wrap">
+                        {% for skill in profile.skills.split %}
+                        <span class="stag">{{ skill|cut:"," }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p style="color:var(--gray-400);font-size:0.85rem;">No skills added yet. <a href="/edit-profile/"
+                            style="color:var(--yellow-dark)">Add skills →</a></p>
+                    {% endif %}
+                    <div style="margin-top:1rem;">
+                        <a href="/edit-profile/" class="btn-yellow" style="font-size:0.8rem;">✏️ Edit Profile →</a>
+                        <a href="/skillmap/"
+                            style="margin-left:0.75rem;font-size:0.8rem;color:var(--gray-500);font-weight:600;text-decoration:none;">View
+                            Skill Map →</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+</body>
+
+</html>

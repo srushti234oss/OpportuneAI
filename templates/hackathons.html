@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hackathons — OpportuneAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Familjen+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <style>
+        .page-hero.hack-hero {
+            background: linear-gradient(135deg, #f97316, #dc2626);
+            color: #fff;
+        }
+
+        .hack-hero .ph-text p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-mark">OA</div>
+            <span class="logo-text">Opportune<b>AI</b></span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-item"><span class="nav-icon">⊞</span><span>Home</span></a>
+            <a href="/scholarships/" class="nav-item"><span class="nav-icon">🎓</span><span>Scholarships</span></a>
+            <a href="/internships/" class="nav-item"><span class="nav-icon">💼</span><span>Internships</span></a>
+            <a href="/hackathons/" class="nav-item active"><span class="nav-icon">⚡</span><span>Hackathons</span></a>
+            <a href="/fellowships/" class="nav-item"><span class="nav-icon">🔬</span><span>Fellowships</span></a>
+            <a href="/tracker/" class="nav-item"><span class="nav-icon">◎</span><span>My Tracker</span><span
+                    class="nav-badge" id="trackerBadge">0</span></a>
+            <a href="/skillmap/" class="nav-item"><span class="nav-icon">◈</span><span>Skill Map</span></a>
+            <a href="/profile/" class="nav-item"><span class="nav-icon">👤</span><span>Profile</span></a>
+        </nav>
+        <div class="sidebar-profile">
+            <div class="sp-avatar">{{ request.user.studentprofile.full_name|first|upper }}</div>
+            <div class="sp-info">
+                <strong>{{ request.user.studentprofile.full_name }}</strong>
+                <span>{{ request.user.studentprofile.branch }} · Year {{ request.user.studentprofile.year }}</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search">
+                <span class="ts-icon">⌕</span>
+                <input type="text" id="globalSearch" placeholder="Search hackathons…" />
+            </div>
+            <div class="topbar-right">
+                <a href="/logout/" id="logout-btn">↩ Logout</a>
+            </div>
+        </header>
+
+        <!-- HERO -->
+        <div class="page-hero hack-hero">
+            <div class="ph-text">
+                <h1>⚡ Hackathons</h1>
+                <p>Build something incredible. Hackathons are the fastest way to get noticed, win prizes, and land PPO
+                    offers. No GPA filter — just skill and hustle.</p>
+            </div>
+            <div class="ph-stat">
+                <span class="ps-num" style="color:#fff">67</span>
+                <span class="ps-label" style="color:rgba(255,255,255,0.6)">Active hackathons</span>
+            </div>
+        </div>
+
+        <!-- FILTER -->
+        <section class="filter-section">
+            <div class="filter-row">
+                <div class="filter-search-wrap">
+                    <span class="ts-icon">⌕</span>
+                    <input type="text" class="filter-input" id="filterInput" placeholder="Search hackathons…">
+                </div>
+                <div class="filter-chips">
+                    <button class="chip active" data-tag="all">All</button>
+                    <button class="chip" data-tag="Team">Team</button>
+                    <button class="chip" data-tag="Govt">Government</button>
+                    <button class="chip" data-tag="Prize">Prize Money</button>
+                    <button class="chip" data-tag="PPO">PPO</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI RECOMMENDATIONS -->
+        <section class="full-grid-section">
+            <div class="section-head" style="margin:0 2rem 1rem;">
+                <h2>AI Matched Hackathons <span class="sh-badge">for you</span></h2>
+            </div>
+            <div class="full-grid" style="margin:0 2rem;">
+                {% for item in recommendations %}
+                <div class="opp-card">
+                    <div class="oc-top">
+                        <div class="oc-icon" style="background:#ffedd5;">⚡</div>
+                        <a href="/save/{{ item.hackathon.id }}/" class="oc-save">♡</a>
+                    </div>
+                    <div class="oc-type type-hackathon">Hackathon</div>
+                    <div class="oc-title">{{ item.hackathon.title }}</div>
+                    <div class="oc-org">{{ item.hackathon.organizer }}</div>
+                    <div class="oc-deadline">⏰ Deadline: {{ item.hackathon.deadline }}</div>
+                    <div class="match-row">
+                        <span class="match-label">Match</span>
+                        {% if item.score >= 70 %}<span class="match-pct mp-high">{{ item.score }}%</span>{% elif
+                        item.score >= 45 %}<span class="match-pct mp-med">{{ item.score }}%</span>{% else %}<span
+                            class="match-pct mp-low">{{ item.score }}%</span>{% endif %}
+                    </div>
+                    <div class="match-bar">
+                        {% if item.score >= 70 %}<div class="match-fill mf-high" style="width:{{ item.score }}%"></div>
+                        {% elif item.score >= 45 %}<div class="match-fill mf-med" style="width:{{ item.score }}%"></div>
+                        {% else %}<div class="match-fill mf-low" style="width:{{ item.score }}%"></div>{% endif %}
+                    </div>
+                    <div class="oc-skills">
+                        {% for skill in item.hackathon.required_skills.split %}
+                        <span class="skill-pill sp-neutral">{{ skill }}</span>
+                        {% endfor %}
+                        {% for skill in item.missing_skills|slice:":3" %}
+                        <span class="skill-pill sp-missing">✗ {{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    <div
+                        style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+                        <span
+                            style="font-size:0.75rem;font-weight:700;{% if item.prediction == 'High Chance' %}color:#10b981{% elif item.prediction == 'Medium Chance' %}color:#f97316{% else %}color:#ef4444{% endif %}">{{ item.prediction }}</span>
+                        <a href="/save/{{ item.hackathon.id }}/"
+                            style="font-size:0.75rem;padding:0.3rem 0.85rem;background:var(--yellow);color:var(--black);border-radius:100px;text-decoration:none;font-weight:700;">Save
+                            →</a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-results" style="grid-column:1/-1;">
+                    <div class="no-results-icon">⚡</div>
+                    <p>Complete your profile to see matched hackathons</p>
+                    <a href="/edit-profile/" class="btn-yellow" style="margin-top:0.75rem;display:inline-block">Set Up
+                        Profile →</a>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+    </main>
+
+    <div class="detail-panel-overlay" id="detailOverlay">
+        <div class="detail-panel"><button class="dp-close" id="dpClose">✕</button>
+            <div class="dp-body" id="dpBody"></div>
+        </div>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="{% static 'js/data.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    <script>
+        document.getElementById('filterInput').addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('.opp-card').forEach(card => {
+                card.style.display = card.innerText.toLowerCase().includes(filter) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Tracker — OpportuneAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Familjen+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <style>
+        .countdown-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 100px;
+            display: inline-block;
+            margin-bottom: 0.6rem;
+        }
+
+        .urgency-urgent {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .urgency-soon {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .urgency-expired {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .urgency-ok {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-mark">OA</div>
+            <span class="logo-text">Opportune<b>AI</b></span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-item"><span class="nav-icon">⊞</span><span>Home</span></a>
+            <a href="/scholarships/" class="nav-item"><span class="nav-icon">🎓</span><span>Scholarships</span></a>
+            <a href="/internships/" class="nav-item"><span class="nav-icon">💼</span><span>Internships</span></a>
+            <a href="/hackathons/" class="nav-item"><span class="nav-icon">⚡</span><span>Hackathons</span></a>
+            <a href="/fellowships/" class="nav-item"><span class="nav-icon">🔬</span><span>Fellowships</span></a>
+            <a href="/tracker/" class="nav-item active"><span class="nav-icon">◎</span><span>My Tracker</span></a>
+            <a href="/skillmap/" class="nav-item"><span class="nav-icon">◈</span><span>Skill Map</span></a>
+            <a href="/profile/" class="nav-item"><span class="nav-icon">👤</span><span>Profile</span></a>
+        </nav>
+        <div class="sidebar-profile">
+            <div class="sp-avatar">{{ request.user.studentprofile.full_name|first|upper }}</div>
+            <div class="sp-info">
+                <strong>{{ request.user.studentprofile.full_name }}</strong>
+                <span>{{ request.user.studentprofile.branch }} · Year {{ request.user.studentprofile.year }}</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search">
+                <span class="ts-icon">⌕</span>
+                <input type="text" placeholder="Search tracker…" />
+            </div>
+        </header>
+
+        <div style="padding:1.5rem 2rem;">
+
+            <h1
+                style="font-family:'Familjen Grotesk',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:0.3rem;">
+                ◎ My Application Tracker
+            </h1>
+            <p style="color:var(--gray-500);font-size:0.875rem;margin-bottom:1.5rem;">
+                Track every opportunity from saving to acceptance.
+            </p>
+
+            <!-- STATS ROW -->
+            <div style="display:flex;gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap;">
+                <div
+                    style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:1rem 1.5rem;flex:1;min-width:140px;">
+                    <div style="font-size:1.6rem;font-weight:800;font-family:'Familjen Grotesk',sans-serif;">{{ total }}
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--gray-500);margin-top:0.2rem;">Total Tracked</div>
+                </div>
+                <div
+                    style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:1rem 1.5rem;flex:1;min-width:140px;">
+                    <div
+                        style="font-size:1.6rem;font-weight:800;font-family:'Familjen Grotesk',sans-serif;color:#f59e0b;">
+                        {{ applied_count }}</div>
+                    <div style="font-size:0.78rem;color:var(--gray-500);margin-top:0.2rem;">Applied</div>
+                </div>
+                <div
+                    style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:1rem 1.5rem;flex:1;min-width:140px;">
+                    <div
+                        style="font-size:1.6rem;font-weight:800;font-family:'Familjen Grotesk',sans-serif;color:#22c55e;">
+                        {{ accepted_count }}</div>
+                    <div style="font-size:0.78rem;color:var(--gray-500);margin-top:0.2rem;">Accepted</div>
+                </div>
+                <div
+                    style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:1rem 1.5rem;flex:1;min-width:140px;">
+                    <div
+                        style="font-size:1.6rem;font-weight:800;font-family:'Familjen Grotesk',sans-serif;color:#f59e0b;">
+                        {{ deadlines_this_week }}</div>
+                    <div style="font-size:0.78rem;color:var(--gray-500);margin-top:0.2rem;">Deadlines This Week</div>
+                </div>
+            </div>
+
+            <!-- KANBAN COLUMNS -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+
+                <!-- SAVED -->
+                <div
+                    style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.25rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                        <h3 style="font-weight:700;font-size:0.95rem;">Saved</h3>
+                        <span
+                            style="background:var(--gray-100);border-radius:100px;padding:0.15rem 0.6rem;font-size:0.75rem;font-weight:700;">{{ saved|length }}</span>
+                    </div>
+                    {% for entry in saved %}
+                    <div
+                        style="background:#fafafa;border:1.5px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:0.75rem;">
+                        <div style="font-weight:700;font-size:0.875rem;margin-bottom:0.3rem;">{{ entry.opportunity.title }}</div>
+                        <div style="font-size:0.75rem;color:var(--gray-500);margin-bottom:0.5rem;">{{ entry.opportunity.company }}</div>
+                        <div class="countdown-badge urgency-{{ entry.urgency }}">⏰ {{ entry.countdown }}</div>
+                        <form method="post" action="/update-note/{{ entry.item.id }}/" style="margin-bottom:0.6rem;">
+                            {% csrf_token %}
+                            <input type="text" name="note" value="{{ entry.item.note }}" placeholder="Add a note…"
+                                style="width:100%;padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:7px;font-size:0.75rem;font-family:inherit;background:white;">
+                            <button type="submit"
+                                style="margin-top:0.35rem;font-size:0.7rem;padding:0.25rem 0.6rem;background:var(--gray-100);border:none;border-radius:6px;cursor:pointer;font-family:inherit;">
+                                Save note
+                            </button>
+                        </form>
+                        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                            <a href="/apply/{{ entry.item.id }}/"
+                                style="font-size:0.72rem;padding:0.3rem 0.7rem;background:#fef3c7;color:#92400e;border-radius:100px;text-decoration:none;font-weight:600;">
+                                Mark Applied →
+                            </a>
+                            <a href="/remove/{{ entry.item.id }}/"
+                                style="font-size:0.72rem;padding:0.3rem 0.7rem;background:#fee2e2;color:#991b1b;border-radius:100px;text-decoration:none;font-weight:600;">
+                                Remove
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p style="color:var(--gray-400);font-size:0.82rem;text-align:center;padding:1rem 0;">No saved
+                        opportunities</p>
+                    {% endfor %}
+                </div>
+
+                <!-- APPLIED -->
+                <div
+                    style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.25rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                        <h3 style="font-weight:700;font-size:0.95rem;">Applied</h3>
+                        <span
+                            style="background:#fef3c7;border-radius:100px;padding:0.15rem 0.6rem;font-size:0.75rem;font-weight:700;color:#92400e;">{{ applied|length }}</span>
+                    </div>
+                    {% for entry in applied %}
+                    <div
+                        style="background:#fffbeb;border:1.5px solid #fcd34d44;border-radius:10px;padding:1rem;margin-bottom:0.75rem;">
+                        <div style="font-weight:700;font-size:0.875rem;margin-bottom:0.3rem;">{{ entry.opportunity.title }}</div>
+                        <div style="font-size:0.75rem;color:var(--gray-500);margin-bottom:0.5rem;">{{ entry.opportunity.company }}</div>
+                        <div class="countdown-badge urgency-{{ entry.urgency }}">⏰ {{ entry.countdown }}</div>
+                        {% if entry.item.note %}
+                        <div style="font-size:0.75rem;color:var(--gray-500);margin-bottom:0.5rem;font-style:italic;">📝
+                            {{ entry.item.note }}</div>
+                        {% endif %}
+                        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                            <a href="/accept/{{ entry.item.id }}/"
+                                style="font-size:0.72rem;padding:0.3rem 0.7rem;background:#dcfce7;color:#166534;border-radius:100px;text-decoration:none;font-weight:600;">
+                                Accepted ✓
+                            </a>
+                            <a href="/reject/{{ entry.item.id }}/"
+                                style="font-size:0.72rem;padding:0.3rem 0.7rem;background:#fee2e2;color:#991b1b;border-radius:100px;text-decoration:none;font-weight:600;">
+                                Rejected ✗
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p style="color:var(--gray-400);font-size:0.82rem;text-align:center;padding:1rem 0;">No applied
+                        opportunities</p>
+                    {% endfor %}
+                </div>
+
+                <!-- ACCEPTED -->
+                <div
+                    style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.25rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                        <h3 style="font-weight:700;font-size:0.95rem;">Accepted</h3>
+                        <span
+                            style="background:#dcfce7;border-radius:100px;padding:0.15rem 0.6rem;font-size:0.75rem;font-weight:700;color:#166534;">{{ accepted|length }}</span>
+                    </div>
+                    {% for entry in accepted %}
+                    <div
+                        style="background:#f0fdf4;border:1.5px solid #86efac44;border-radius:10px;padding:1rem;margin-bottom:0.75rem;">
+                        <div style="font-weight:700;font-size:0.875rem;margin-bottom:0.3rem;">{{ entry.opportunity.title }}</div>
+                        <div style="font-size:0.75rem;color:var(--gray-500);margin-bottom:0.5rem;">{{ entry.opportunity.company }}</div>
+                        <div style="font-size:0.75rem;font-weight:700;color:#16a34a;">🎉 Congratulations!</div>
+                        {% if entry.item.note %}
+                        <div style="font-size:0.75rem;color:var(--gray-500);margin-top:0.4rem;font-style:italic;">📝 {{
+                            entry.item.note }}</div>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <p style="color:var(--gray-400);font-size:0.82rem;text-align:center;padding:1rem 0;">No accepted
+                        opportunities</p>
+                    {% endfor %}
+                </div>
+
+                <!-- REJECTED -->
+                <div
+                    style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.25rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                        <h3 style="font-weight:700;font-size:0.95rem;">Rejected</h3>
+                        <span
+                            style="background:#fee2e2;border-radius:100px;padding:0.15rem 0.6rem;font-size:0.75rem;font-weight:700;color:#991b1b;">{{ rejected|length }}</span>
+                    </div>
+                    {% for entry in rejected %}
+                    <div
+                        style="background:#fff5f5;border:1.5px solid #fca5a544;border-radius:10px;padding:1rem;margin-bottom:0.75rem;">
+                        <div style="font-weight:700;font-size:0.875rem;margin-bottom:0.3rem;">{{ entry.opportunity.title }}</div>
+                        <div style="font-size:0.75rem;color:var(--gray-500);margin-bottom:0.5rem;">{{ entry.opportunity.company }}</div>
+                        <div style="font-size:0.75rem;color:#dc2626;font-weight:600;">Keep going 💪</div>
+                        {% if entry.item.note %}
+                        <div style="font-size:0.75rem;color:var(--gray-500);margin-top:0.4rem;font-style:italic;">📝 {{
+                            entry.item.note }}</div>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <p style="color:var(--gray-400);font-size:0.82rem;text-align:center;padding:1rem 0;">No rejected
+                        opportunities</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
