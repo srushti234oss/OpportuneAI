@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Tracker — OpportuneAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<style>
+.tracker-page{padding:1.5rem 2rem;}
+.tracker-page h1{font-family:'Familjen Grotesk',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:0.3rem;}
+.tracker-page .sub{color:var(--gray-500);font-size:0.875rem;margin-bottom:1.5rem;}
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:start;}
+.kb-col{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.kb-header{padding:1rem 1.1rem;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:0.5rem;}
+.kb-header h3{font-size:0.85rem;font-weight:700;flex:1;}
+.kb-count{background:var(--gray-100);color:var(--gray-600);font-size:0.7rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:100px;}
+.kb-saved .kb-header{border-top:3px solid var(--blue);}
+.kb-applied .kb-header{border-top:3px solid var(--orange);}
+.kb-accepted .kb-header{border-top:3px solid var(--green);}
+.kb-rejected .kb-header{border-top:3px solid var(--red);}
+.kb-body{padding:0.75rem;min-height:180px;}
+.kb-empty{text-align:center;padding:2rem 0.5rem;color:var(--gray-400);font-size:0.8rem;line-height:1.6;}
+.kb-card{background:var(--gray-50);border:1.5px solid var(--border);border-radius:10px;padding:0.85rem;margin-bottom:0.6rem;transition:all var(--transition);}
+.kb-card:hover{border-color:var(--yellow);background:var(--yellow-light);}
+.kb-card-title{font-size:0.82rem;font-weight:700;color:var(--gray-900);margin-bottom:0.15rem;}
+.kb-card-org{font-size:0.72rem;color:var(--gray-500);margin-bottom:0.5rem;}
+.kb-card-dl{font-size:0.68rem;color:var(--gray-400);margin-bottom:0.6rem;}
+.kb-card-actions{display:flex;gap:0.35rem;flex-wrap:wrap;}
+.kb-btn{font-size:0.68rem;padding:0.2rem 0.6rem;border-radius:100px;background:var(--white);border:1.5px solid var(--border);color:var(--gray-700);cursor:pointer;font-family:inherit;transition:all var(--transition);}
+.kb-btn:hover{background:var(--black);color:#fff;border-color:var(--black);}
+.kb-btn.danger:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.kb-btn.success{background:var(--green-light);color:#065f46;border-color:#6ee7b7;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.stat-pill{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;}
+.stat-pill .sp-n{font-family:'Familjen Grotesk',sans-serif;font-size:1.6rem;font-weight:700;display:block;}
+.stat-pill .sp-l{font-size:0.72rem;color:var(--gray-500);}
+</style>
+</head>
+<body>
+<aside class="sidebar"><div class="sidebar-logo"><div class="logo-mark">OA</div><span class="logo-text">Opportune<b>AI</b></span></div>
+<nav class="sidebar-nav">
+<nav class="sidebar-nav">
+  <a href="/" class="nav-item"><span class="nav-icon">⊞</span><span>Home</span></a>
+
+  <a href="/scholarships/" class="nav-item">
+    <span class="nav-icon">🎓</span><span>Scholarships</span>
+  </a>
+
+  <a href="/internships/" class="nav-item">
+    <span class="nav-icon">💼</span><span>Internships</span>
+  </a>
+
+  <a href="/hackathons/" class="nav-item">
+    <span class="nav-icon">⚡</span><span>Hackathons</span>
+  </a>
+
+  <a href="/fellowships/" class="nav-item">
+    <span class="nav-icon">🔬</span><span>Fellowships</span>
+  </a>
+
+  <a href="/tracker/" class="nav-item active">
+    <span class="nav-icon">◎</span><span>My Tracker</span>
+    <span class="nav-badge" id="trackerBadge">0</span>
+  </a>
+
+  <a href="/skillmap/" class="nav-item">
+    <span class="nav-icon">◈</span><span>Skill Map</span>
+  </a>
+</nav>
+</nav>
+<div class="sidebar-profile">
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
+    <div class="sp-info">
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
+</aside>
+<main class="main-content">
+<header class="topbar"><div class="topbar-search"><span class="ts-icon">⌕</span><input type="text" id="globalSearch" placeholder="Search…"/></div><div class="topbar-right"><button class="btn-setup" id="openSetupBtn">Set Up My Profile →</button></div></header>
+<div class="tracker-page">
+<h1>My Application Tracker</h1>
+<p class="sub">Track every opportunity from saving to acceptance. Move cards between columns as you progress.</p>
+
+<div class="tracker-board">
+
+    <!-- SAVED -->
+    <div class="tracker-column">
+        <h2>Saved</h2>
+
+        {% for item in saved_opportunities %}
+        <div class="tracker-card">
+
+            <h3>{{ item.opportunity.title }}</h3>
+            <p>{{ item.opportunity.company }}</p>
+
+            <div class="tracker-actions">
+                <a href="{% url 'apply_opportunity' item.id %}">
+                    <button class="tracker-btn apply-btn">
+                        Apply
+                    </button>
+                </a>
+
+                <a href="{% url 'remove_opportunity' item.id %}">
+                    <button class="tracker-btn remove-btn">
+                        Remove
+                    </button>
+                </a>
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="empty-text">No saved opportunities</p>
+        {% endfor %}
+    </div>
+
+    <!-- APPLIED -->
+    <div class="tracker-column">
+        <h2>Applied</h2>
+
+        {% for item in applied_opportunities %}
+        <div class="tracker-card">
+
+            <h3>{{ item.opportunity.title }}</h3>
+            <p>{{ item.opportunity.company }}</p>
+
+            <div class="tracker-actions">
+                <a href="{% url 'accept_opportunity' item.id %}">
+                    <button class="tracker-btn success-btn">
+                        Accept
+                    </button>
+                </a>
+
+                <a href="{% url 'reject_opportunity' item.id %}">
+                    <button class="tracker-btn reject-btn">
+                        Reject
+                    </button>
+                </a>
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="empty-text">No applied opportunities</p>
+        {% endfor %}
+    </div>
+
+    <!-- ACCEPTED -->
+    <div class="tracker-column">
+        <h2>Accepted</h2>
+
+        {% for item in accepted_opportunities %}
+        <div class="tracker-card">
+
+            <h3>{{ item.opportunity.title }}</h3>
+            <p>{{ item.opportunity.company }}</p>
+
+        </div>
+        {% empty %}
+        <p class="empty-text">No accepted opportunities</p>
+        {% endfor %}
+    </div>
+
+    <!-- REJECTED -->
+    <div class="tracker-column">
+        <h2>Rejected</h2>
+
+        {% for item in rejected_opportunities %}
+        <div class="tracker-card">
+
+            <h3>{{ item.opportunity.title }}</h3>
+            <p>{{ item.opportunity.company }}</p>
+
+        </div>
+        {% empty %}
+        <p class="empty-text">No rejected opportunities</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+
+
+</main>
+
+</body>
+</html>

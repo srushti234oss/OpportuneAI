@@ -1,0 +1,474 @@
+{% load static %}
+<script>
+    const USER_NAME = "{{ request.user.studentprofile.full_name }}";
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OpportuneAI — Student Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/main.css' %}"/>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">OA</div>
+    <span class="logo-text">Opportune<b>AI</b></span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="{% url 'home' %}" class="nav-item active">
+    <span class="nav-icon">⌂</span>
+    <span style="color:#111;">Home</span>
+</a>
+    </a>
+    <a href="/scholarships/" class="nav-item">
+      <span class="nav-icon">🎓</span>
+      <span>Scholarships</span>
+    </a>
+    <a href="/internships/" class="nav-item">
+      <span class="nav-icon">💼</span>
+      <span>Internships</span>
+    </a>
+    <a href="/hackathons/" class="nav-item">
+      <span class="nav-icon">⚡</span>
+      <span>Hackathons</span>
+    </a>
+    <a href="/fellowships/" class="nav-item">
+      <span class="nav-icon">🔬</span>
+      <span>Fellowships</span>
+    </a>
+    <a href="/tracker/" class="nav-item">
+      <span class="nav-icon">◎</span>
+      <span>My Tracker</span>
+      <span class="nav-badge" id="trackerBadge">0</span>
+    </a>
+    <a href="/skillmap/" class="nav-item">
+      <span class="nav-icon">◈</span>
+      <span>Skill Map</span>
+    </a>
+    <a href="/profile/" class="nav-item">
+    <span class="nav-icon">👤</span>
+    <span>Profile</span>
+</a>
+  </nav>
+
+  <div class="sidebar-profile">
+
+    <div class="sp-avatar">
+    {{ request.user.studentprofile.full_name|first|upper }}
+</div>
+
+    <div class="sp-info">
+
+    <strong>
+        {{ request.user.studentprofile.full_name }}
+    </strong>
+
+    <span>
+        {{ request.user.studentprofile.branch }}
+        · Year {{ request.user.studentprofile.year }}
+    </span>
+
+</div>
+</div>
+    
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-search">
+      <span class="ts-icon">⌕</span>
+      <input type="text" id="globalSearch" placeholder="Search opportunities, skills, companies…" />
+    </div>
+    <div class="topbar-right">
+      <div class="notif-bell" id="notifBell">
+        🔔
+        <span class="notif-dot"></span>
+      </div>
+
+
+ <a href="/logout/" id="logout-btn">
+    ↩ Logout
+</a>
+  
+  
+
+
+
+    </div>
+    
+     
+  </header>
+
+  <!-- HERO BANNER -->
+  <section class="hero-banner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">✦ AI-Powered · Personalised · Free</div>
+      <h1>Explore <span class="hl">new opportunities</span><br>built for <em>you.</em></h1>
+      <p>Stop scrolling 10 platforms. OpportuneAI uses AI to match scholarships, internships, hackathons & fellowships to your exact profile — and shows you exactly what's missing.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" id="heroCTA">Get My Matches →</button>
+        <button class="btn-outline" onclick="document.getElementById('discover').scrollIntoView({behavior:'smooth'})">Browse All</button>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="art-blob"></div>
+      <div class="floating-stat fs-1">
+        <span class="fs-num">94%</span>
+        <span class="fs-label">Match accuracy</span>
+      </div>
+      <div class="floating-stat fs-2">
+        <span class="fs-num">1,240+</span>
+        <span class="fs-label">Opportunities</span>
+      </div>
+      <div class="floating-stat fs-3">
+        <span class="fs-num">100%</span>
+        <span class="fs-label">Skill Gap Analysis</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- UPCOMING DEADLINES TICKER -->
+  <div class="deadline-ticker" id="deadlineTicker">
+    <span class="ticker-label">⏰ Upcoming deadlines:</span>
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <!-- PROGRESS / LEVEL SYSTEM (like ScholarshipOwl) -->
+  <section class="progress-section" id="progressSection">
+
+
+
+    <div class="progress-card">
+      <div class="pc-left">
+        <div class="level-ring" id="levelRing">
+          <div class="lr-inner" id="lrInner">?</div>
+        </div>
+
+
+        <div class="pc-info">
+          <div class="pc-label">YOUR PROFILE STRENGTH</div>
+          <div class="pc-name" id="pcName">Complete your profile</div>
+          <div class="pc-sub" id="pcSub">Add skills & GPA to unlock matches</div>
+        </div>
+      </div>
+      <div class="pc-right">
+        <div class="level-steps">
+          <div class="ls-step done">1<span>Starter</span></div>
+          <div class="ls-line"></div>
+          <div class="ls-step active">2<span>Explorer</span></div>
+          <div class="ls-line"></div>
+          <div class="ls-step">3<span>Achiever</span></div>
+          <div class="ls-line"></div>
+          <div class="ls-step">4<span>Champion</span></div>
+        </div>
+        <div class="goal-box">
+          <p>🎯 Students with complete profiles get <strong>3x more matches</strong></p>
+          <button class="btn-yellow" id="pcSetupBtn">Complete My Profile →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORY QUICK ACCESS -->
+  <section class="categories" id="discover">
+    <div class="section-head">
+      <h2>Explore by Category</h2>
+      <a href="#" class="see-all">See all →</a>
+    </div>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 27ba8b09a2e9c36dbf26eba693324172f70c3948
+    <div class="cat-grid">
+      <a href="/scholarships/" class="cat-card cat-scholarship">
+        <div class="cat-icon">🎓</div>
+        <div class="cat-info">
+          <strong>Scholarships</strong>
+          <span>128 active</span>
+        </div>
+        <div class="cat-arrow">↗</div>
+      </a>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 27ba8b09a2e9c36dbf26eba693324172f70c3948
+      <a href="/internships/" class="cat-card cat-internship">
+        <div class="cat-icon">💼</div>
+        <div class="cat-info">
+          <strong>Internships</strong>
+          <span>394 active</span>
+        </div>
+        <div class="cat-arrow">↗</div>
+      </a>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 27ba8b09a2e9c36dbf26eba693324172f70c3948
+      <a href="/hackathons/" class="cat-card cat-hackathon">
+        <div class="cat-icon">⚡</div>
+        <div class="cat-info">
+          <strong>Hackathons</strong>
+          <span>67 active</span>
+        </div>
+        <div class="cat-arrow">↗</div>
+      </a>
+<<<<<<< HEAD
+      
+=======
+>>>>>>> 27ba8b09a2e9c36dbf26eba693324172f70c3948
+      <a href="/fellowships/" class="cat-card cat-fellowship">
+        <div class="cat-icon">🔬</div>
+        <div class="cat-info">
+          <strong>Fellowships</strong>
+          <span>52 active</span>
+        </div>
+        <div class="cat-arrow">↗</div>
+      </a>
+    </div>
+  </section>
+
+
+<section class="ai-recommendations">
+
+    <h2>AI Recommended Opportunities</h2>
+
+    <div class="recommendation-grid">
+
+        {% for item in recommendations %}
+
+        <div class="recommendation-card">
+
+            <h3>
+                {{ item.opportunity.title }}
+            </h3>
+
+            <p>
+                {{ item.opportunity.company }}
+            </p>
+
+            <p>
+                {{ item.opportunity.category }}
+            </p>
+
+            <p>
+                Match Score:
+                {{ item.score }}%
+            </p>
+<p class="prediction">
+
+    Prediction:
+    {{ item.prediction }}
+
+</p>
+            <p>
+                Skills:
+                {{ item.opportunity.required_skills }}
+            </p>
+            <p>
+
+    <strong>Missing Skills:</strong>
+
+    {% for skill in item.missing_skills %}
+
+        <span class="missing-skill">
+            {{ skill }}
+        </span>
+
+    {% endfor %}
+
+</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+
+
+
+
+  <!-- TOP MATCHES (personalised recommendations) -->
+  <section class="top-matches">
+    <div class="section-head">
+      <h2>Top Matches <span class="sh-badge" id="matchCountBadge">for you</span></h2>
+      <a href="/internships/"" class="see-all">See all →</a>
+    </div>
+    <div class="matches-grid" id="matchesGrid">
+      <!-- Filled by JS -->
+    </div>
+  </section>
+
+  <!-- TWO-COLUMN: SKILL GAPS + FEATURED -->
+  <div class="two-col-section">
+    <!-- SKILL GAP WIDGET -->
+    <div class="skill-gap-widget">
+      <div class="sgw-head">
+        <h3>Your Skill Gaps</h3>
+        <span class="sgw-sub">Skills that unlock the most opportunities</span>
+      </div>
+      <div class="sgw-body" id="sgwBody">
+        <div class="sgw-empty">
+          <div class="sgw-empty-icon">◈</div>
+          <p>Set up your profile to see personalised skill gaps</p>
+          <button class="btn-yellow small" onclick="openProfileModal()">Set up →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURED OPPORTUNITIES -->
+    <div class="featured-section">
+      <div class="section-head">
+        <h3>Featured This Week</h3>
+        <span class="sgw-sub">Hand-picked by our team</span>
+      </div>
+      <div class="featured-list" id="featuredList"></div>
+    </div>
+  </div>
+
+  <!-- DESTINATIONS (like Image 1's grid) -->
+  <section class="destinations">
+    <div class="section-head">
+      <h2>Top Companies Hiring</h2>
+      <span class="sgw-sub">Over 200 companies post opportunities here</span>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card dc-large" style="background:linear-gradient(135deg,#1a1a2e,#16213e)">
+        <div class="dc-overlay"></div>
+        <div class="dc-content">
+          <strong>Google</strong>
+          <span>12 open roles</span>
+        </div>
+      </div>
+      <div class="dest-card dc-large" style="background:linear-gradient(135deg,#0f3460,#533483)">
+        <div class="dc-overlay"></div>
+        <div class="dc-content">
+          <strong>Microsoft</strong>
+          <span>8 open roles</span>
+        </div>
+      </div>
+      <div class="dest-card dc-small" style="background:linear-gradient(135deg,#e94560,#c41c1c)">
+        <div class="dc-content">
+          <strong>Amazon</strong>
+          <span>15 open roles</span>
+        </div>
+      </div>
+      <div class="dest-card dc-small" style="background:linear-gradient(135deg,#2d6a4f,#1b4332)">
+        <div class="dc-content">
+          <strong>ISRO</strong>
+          <span>5 open roles</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- PROFILE SETUP MODAL -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-box">
+    <button class="modal-close" id="closeModal">✕</button>
+    <div class="modal-header">
+      <div class="modal-step-bar">
+        <div class="msb-step active" data-step="1">1<span>Basics</span></div>
+        <div class="msb-line"></div>
+        <div class="msb-step" data-step="2">2<span>Skills</span></div>
+        <div class="msb-line"></div>
+        <div class="msb-step" data-step="3">3<span>Interests</span></div>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="modal-step-content active" id="step1">
+      <h2>Tell us about yourself</h2>
+      <p class="modal-sub">This powers your AI recommendations</p>
+      <div class="form-row">
+        <div class="fg">
+          <label>Full Name</label>
+          <input type="text" id="fName" placeholder="e.g. Priya Sharma" class="fi">
+        </div>
+        <div class="fg">
+          <label>Branch / Department</label>
+          <input type="text" id="fBranch" placeholder="e.g. Computer Science" class="fi">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="fg">
+          <label>Year of Study</label>
+          <select id="fYear" class="fi">
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3" selected>3rd Year</option>
+            <option value="4">4th Year</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>College / University</label>
+          <input type="text" id="fCollege" placeholder="e.g. IIT Bengaluru" class="fi">
+        </div>
+      </div>
+      <div class="fg">
+        <label>CGPA / GPA <span class="lh">(out of 10)</span></label>
+        <div class="slider-row">
+          <input type="range" id="fGpa" min="0" max="10" step="0.1" value="7.5" class="gpa-range">
+          <div class="gpa-val" id="gpaVal">7.5</div>
+        </div>
+        <div class="gpa-desc" id="gpaDesc">Good — eligible for most opportunities</div>
+      </div>
+      <button class="btn-primary full" onclick="goStep(2)">Next: Add Skills →</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="modal-step-content" id="step2">
+      <h2>Your Skills</h2>
+      <p class="modal-sub">Click to add — be honest, this affects your match score</p>
+      <div class="skill-grid" id="skillGrid"></div>
+      <div class="selected-preview" id="skillPreview"></div>
+      <div class="step-nav">
+        <button class="btn-outline" onclick="goStep(1)">← Back</button>
+        <button class="btn-primary" onclick="goStep(3)">Next: Interests →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="modal-step-content" id="step3">
+      <h2>Your Interests</h2>
+      <p class="modal-sub">This helps us surface the most relevant opportunities</p>
+      <div class="skill-grid" id="interestGrid"></div>
+      <div class="selected-preview" id="interestPreview"></div>
+      <div class="step-nav">
+        <button class="btn-outline" onclick="goStep(2)">← Back</button>
+        <button class="btn-primary full" id="saveProfileBtn">Save & Discover Matches ✦</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPPORTUNITY DETAIL PANEL (slide-in) -->
+<div class="detail-panel-overlay" id="detailOverlay">
+  <div class="detail-panel" id="detailPanel">
+    <button class="dp-close" id="dpClose">✕</button>
+    <div class="dp-body" id="dpBody"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="{% static 'js/data.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
