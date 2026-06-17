@@ -1,2 +1,4 @@
 #include<stdio.h>
-elrjt
+int main(){
+    printf("Hello");
+}
